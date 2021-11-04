@@ -1,4 +1,3 @@
-from stcmx.bitfield_model import BitFieldModel
 
 
 class SFRModel:
@@ -27,11 +26,6 @@ class SFRModel:
         """Get bits in specified offset """
         tmp = self.val & (mask << offset)
         return tmp >> offset
-
-    def set_bitfield(self, option:BitFieldModel):
-        """Set the value of this SFR"""
-        self.val &= 0xFF - (option.mask << option.offset)
-        self.val |= option.value << option.offset
 
     def output_code(self, comment = False, comment_lang = 'en', force = False):
         """Generate C code for this SFR"""

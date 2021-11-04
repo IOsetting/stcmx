@@ -1,7 +1,7 @@
 from stcmx.stc8d_database import Stc8dDatabase
-from stcmx.bitfield_model import BitFieldModel
 from stcmx.config_control import ConfigControl
 from stcmx.sfrbits_model import SFRBitsModel
+from stcmx.util import InputHelper,SelectHelper
 
 
 class Stc8dConfig(Stc8dDatabase, ConfigControl):
@@ -246,17 +246,15 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
     def set_fosc(self):
         """Set IRCBAND and IRTRIM according to specified frequency"""
         if self.CKSEL.val == 0B01 or self.CKSEL.val == 0B10:
-            opt = BitFieldModel(
-                {},
+            opt = InputHelper(
                 {
                     'en': "Please input the external OSC/CLK frequency, value in range [4500000, 53400000]\n[%d]:",
                     'cn': "请输入外部振荡源或时钟频率, 值必须在[4500000, 53400000]区间内\n[%d]:",
                 },
-                self.FOSC, 0,
-                valid=lambda a: (int(a) >= 4500000 and int(a) <= 53400000)
+                valid=lambda a: (int(a) >= 4000000 and int(a) <= 53000000),
             )
             val = int(opt.input(self.lang))
-            self.FOSC = int(val)
+            self.FOSC = val
             self.IRCBAND.reset()
             self.IRTRIM.reset()
             return
@@ -278,7 +276,7 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
             '8': 40000000,
             '9': 45000000,
         }
-        opt = BitFieldModel(
+        opt = SelectHelper(
             {
                 '0': 'T20M_ADDR',
                 '1': 'T22M_ADDR',
@@ -315,15 +313,13 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
                       "  8: 40MHz\n" +
                       "  9: 45MHz\n[%s]:",
             },
-            '0', 0, 0B11,
-            prompt_once= {
+            '0',
+            prompt_once={
                 'en': 'Internal OSC frequency options: 6M Band[4.5MHz～8MHz], 10M Band[7.5MHz～13.5MHz], 27M Band[20.5MHz, 36MHz]，44M Band[29MHz～55MHz]',
                 'cn': '内部振荡源频段: 6M频段[4.5MHz～8MHz], 10M频段[7.5MHz～13.5MHz], 27M频段[20.5MHz, 36MHz]，44M频段[29MHz～55MHz]'
             },
-            valid= lambda a: (int(a) >= 4500000 and int(a) <= 13500000) or (int(a) >= 20500000 and int(a) <= 53400000)
         )
-        opt.select(self.lang)
-        self.IRTRIM.assignment = opt.value
+        self.IRTRIM.assignment = opt.select(self.lang)
         self.FOSC = frequencies[opt.selection]
         # set internal OSC band
         if opt.selection in ['0','1','2','3','4','5']:

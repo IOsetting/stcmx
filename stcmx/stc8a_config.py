@@ -1,6 +1,6 @@
 from stcmx.stc8a_database import Stc8aDatabase
-from stcmx.bitfield_model import BitFieldModel
 from stcmx.config_control import ConfigControl
+from stcmx.util import InputHelper,SelectHelper
 
 
 class Stc8aConfig(Stc8aDatabase, ConfigControl):
@@ -42,7 +42,7 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
             'cn': "==== 串口配置开始 ====",
         })
         self.uart1_mode_select()
-        self.SCON_REN.select()
+        self.SCON_REN.select(self.lang)
         self.uart1_mode1_mode3_baud_rate_source_select()
         self.uart1_mode0_baud_rate_control()
         self.uart1_mode123_double_baud_rate_control()
@@ -53,7 +53,7 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
         })
 
     def cpuid_select(self):
-        opt = BitFieldModel(
+        opt = SelectHelper(
             {'0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6'},
             {
                 'en': "Please select MCU type\n:" +
@@ -73,10 +73,9 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
                       "  5: STC8A8K60S4A12 STC8A4K60S4A12 STC8F2K60S4 STC8F2K60S2\n" +
                       "  6: STC8A8K64S4A12 STC8A4K64S4A12 STC8F2K64S4 STC8F2K64S2\n[%s]:",
             },
-            '0', 0
+            '0'
         )
-        opt.select(self.lang)
-        self.OPTIONS['cpuid'] = opt.value
+        self.OPTIONS['cpuid'] = opt.select(self.lang)
 
     def clock_source_select(self):
         """Select the clock source"""
@@ -106,17 +105,15 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
         """Set IRTRIM according to input frequency"""
 
         if self.MCKSEL.get_value() == 0B01 or self.MCKSEL.get_value() == 0B10:
-            opt = BitFieldModel(
-                {},
+            opt = InputHelper(
                 {
                     'en': "Please input the external OSC/CLK frequency, value in range [4500000, 28000000]\n[%d]:",
                     'cn': "请输入外部振荡源或时钟频率, 值必须在[4500000, 28000000]区间内\n[%d]:",
                 },
-                self.FOSC, 0,
+                self.FOSC,
                 valid=lambda a: (4500000 <= int(a) <= 28000000)
             )
-            val = int(opt.input(self.lang))
-            self.FOSC = int(val)
+            self.FOSC = int(opt.input(self.lang))
             self.IRC24MCR.reset()
             self.IRTRIM.reset()
             return
@@ -128,15 +125,13 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
 
         """For internal RC oscillator, we need to carefully make it close to the target frequency"""
         # Calculate possible frequency range
-
-        opt = BitFieldModel(
-            {},
+        opt = InputHelper(
             {
                 'en': "Please input the frequency, value in range [16000000, 28000000]\n[%d]:",
                 'cn': "请输入频率, 可调节频率范围区间为[16000000, 28000000]\n[%d]:",
             },
-            self.FOSC, 0, 0B11,
-            valid= lambda a: (16000000 <= int(a) <= 28000000)
+            self.FOSC,
+            valid=lambda a: (16000000 <= int(a) <= 28000000)
         )
         val = int(opt.input(self.lang))
         # For built-in fixed 24MHz and 22.1184MHz, use rom value
