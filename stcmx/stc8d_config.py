@@ -36,8 +36,8 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
             },
             values={'0': 0B0, '1': 0B1},
             options={
-                '0': {'en': 'P5.4', 'cn': 'P1.6'},
-                '1': {'en': 'P5.4', 'cn': 'P1.6'},
+                '0': {'en': 'P5.4', 'cn': 'P5.4'},
+                '1': {'en': 'P1.6', 'cn': 'P1.6'},
             }
         )
         """时钟输出PIN脚选择"""
@@ -212,6 +212,16 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
         )
         """定时器2时钟输出"""
 
+        self.TM2PS_V = SFRBitsModel(
+            self.TM2PS, 'TM2PS_V', 0,
+            {
+                'en': '',
+                'cn': '定时器2 八位预分频系数'
+            },
+            len=8
+        )
+        """定时器2 八位预分频系数"""
+
         self.T0_GATE = SFRBitsModel(
             self.TMOD, 'T0_GATE', 3,
             {
@@ -289,9 +299,14 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
         self.clock_source_select()
         self.set_fosc()
         self.frequency_adjust()
-        self.set_sysclock_division()
-        self.MCLKOCRDIV.select(self.lang)
-        self.clock_output_pin_select()
+        # 设置分频系数
+        v = self.CLKDIV_0.select(self.lang)
+        self.SYSCLK = self.FOSC if v == 0 else int(self.FOSC / v)
+        # 设置时钟输出
+        v = self.MCLKOCRDIV.select(self.lang)
+        if v != 0x00:
+            # 时钟输出脚选择
+            self.MCLKO_S.select(self.lang)
         self.print({
             'en': "==== SYSTEM CLOCK CONFIG END ====",
             'cn': "==== 系统时钟配置结束 ====",
@@ -316,7 +331,8 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
         })
         # 选择串口1模式
         mode = self.SCON_MODE.select(self.lang)
-        if mode == 0B00: # 模式0, 同步移位寄存器模式, 当UART_M0x6=0,波特率=SYSCLK/12, 当UART_M0x6=1时,波特率为SYSCLK/2
+        # 模式0, 同步移位寄存器模式, 当UART_M0x6=0,波特率=SYSCLK/12, 当UART_M0x6=1时,波特率为SYSCLK/2
+        if mode == 0B00:
             # 模式 1 和模式 0 为非多机通信方式，在这两种方式时，SM2 应设置为 0
             self.SCON.set_bit(0B0, 5)
             uart_m0x6 = self.UART_M0x6.select(self.lang)
@@ -325,7 +341,9 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
             else:
                 self.uart1['baudRate'] = int(self.SYSCLK)
             self.uart1['enabled'] = True
-        elif mode == 0B01: # 模式1
+
+        # 模式1
+        elif mode == 0B01:
             # 模式 1 和模式 0 为非多机通信方式，在这两种方式时，SM2 应设置为 0
             self.SCON.set_bit(0B0, 5)
             # 串口1模式1/2/3的双倍波特率模式
@@ -333,21 +351,40 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
             # 串口1模式1/3波特率来源
             oscSource = self.S1ST2.select(self.lang)
             if oscSource == 0B0: # 定时器1
-                print("TODO")
+                self.TR1.set_value(0B1)
+                self.T1x12.select(self.lang)
+                self.T1_CT.set_value(0B0)
+                self.T1_GATE.set_value(0B0)
+                while True:
+                    t1mode = self.T1_MODE.select(self.lang)
+                    if t1mode == 0x00 or t1mode == 0x10:
+                        break
+                    else:
+                        self.print({
+                            'en': 'Only Mode0 and Mode2 are acceptable',
+                            'cn': '只能使用模式0和模式2',
+                        })
+                self.T1CLKO.set_value(0B0)
+                # TODO calculate th1 tl1
             else: # 定时器2
-                print("TODO")
+                self.T2R.set_value(0B1)
+                self.T2x12.select(self.lang)
+                self.T2_CT.set_value(0B0)
+                self.TM2PS_V.select(self.lang)
+                self.T2CLKO.set_value(0B0)
+                # TODO calculate t2h t2l
 
-
-        elif mode == 0B10:  # 模式2
+        # 模式2
+        elif mode == 0B10:
             # 串口1模式1/2/3的双倍波特率模式
             doubleBaudRateMode = self.SMOD.select(self.lang)
 
-        else:  # 模式3
+        # 模式3
+        else:
             # 串口1模式1/2/3的双倍波特率模式
             doubleBaudRateMode = self.SMOD.select(self.lang)
             # 串口1模式1/3波特率来源
             oscSource = self.S1ST2.select(self.lang)
-
 
         # 启用接收
         self.SCON_REN.select(self.lang)
@@ -401,10 +438,9 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
         self.T2R.select(self.lang)
         self.T2x12.select(self.lang)
         self.T2_CT.select(self.lang)
-        self.T2_GATE.select(self.lang)
-        self.T2_MODE.select(self.lang)
+        self.TM2PS_V.select(self.lang)
         self.T2CLKO.select(self.lang)
-        self.timer1_period_config()
+        self.timer2_period_config()
         self.print({
             'en': "==== TIMER2 CONFIG END ====",
             'cn': "==== 定时器2 配置结束 ====",
@@ -522,15 +558,6 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
             self.IRCBAND.set_bits(0B11, 0B11, 0)
             self.VRTRIM.assignment = 'VRT44M_ADDR'
 
-    def clock_output_pin_select(self):
-        if self.MCLKOCRDIV.get_value() == 0x00:
-            self.print({
-                'en': "No clock output, skip output pin selection",
-                'cn': "未设置时钟输出, 跳过输出PIN脚选择",
-            })
-            return
-        self.MCLKO_S.select(self.lang)
-
     def timer0_period_config(self):
         """
         Set TH0 and TL0 according to input frequency.
@@ -647,3 +674,34 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
                             self.TL1.set_bits(int(thl) & 0xFF, 0xFF, 0)
                             self.TH1.set_bits(int(thl) >> 8, 0xFF, 0)
                             break
+
+    def timer2_period_config(self):
+        tm2ps = self.TM2PS_V.get_value() + 1 # SYSCLK / (TM2PS + 1)
+        if self.T2x12.get_value() == 0B0:  # 12T
+            lb = self.SYSCLK / 65535 / 12 / tm2ps
+            hb = self.SYSCLK / 12 / tm2ps
+        else:  # 1T
+            lb = self.SYSCLK / 65535 / tm2ps
+            hb = self.SYSCLK / tm2ps
+        val = lb
+
+        while True:
+            arg = self.input({
+                'en': "Please input timer1 frequency, value between %.2f and %.2f:\n[%.2f]:" % (lb, hb, val),
+                'cn': "请输入定时器1的频率, 取值于 [%.2f,  %.2f]区间内:\n[%.2f]:" % (lb, hb, val),
+            })
+            if len(arg) > 0:
+                val = float(arg)
+            if lb <= val <= hb:
+                if self.T2x12.get_value() == 0B0:  # 12T
+                    thl = int(65536 - (self.SYSCLK / val / 12 / tm2ps))
+                    if 0 < thl < 65536:
+                        self.T2H.set_bits(int(thl) & 0xFF, 0xFF, 0)
+                        self.T2L.set_bits(int(thl) >> 8, 0xFF, 0)
+                        break
+                else:  # 1T
+                    thl = int(65536 - (self.SYSCLK / val / tm2ps))
+                    if 0 < thl < 65536:
+                        self.T2H.set_bits(int(thl) & 0xFF, 0xFF, 0)
+                        self.T2L.set_bits(int(thl) >> 8, 0xFF, 0)
+                        break

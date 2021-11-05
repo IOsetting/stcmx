@@ -193,9 +193,3 @@ class Stc8Config(Stc8Database):
         elif value == 0B11:
             self.FOSC = int(self.FOSC * 1.001)
 
-    def set_sysclock_division(self):
-        value = self.CLKDIV_0.select(self.lang)
-        self.SYSCLK = self.FOSC if value == 0 else int(self.FOSC / value)
-
-
-

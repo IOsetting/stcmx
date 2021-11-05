@@ -27,3 +27,6 @@ class ConfigControl:
 
     def define_timer1(self):
         pass
+
+    def define_timer2(self):
+        pass

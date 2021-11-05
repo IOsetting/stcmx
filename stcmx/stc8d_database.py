@@ -24,9 +24,9 @@ class Stc8dDatabase(Stc8Config):
     MCLKOCR = SFRModel('MCLKOCR',   0xFE05, 1, 0x00, dict(en='Clock Output Control',cn='主时钟输出控制寄存器'))
     IRCDB   = SFRModel('IRCDB',     0xFE06, 1, 0x80, dict(en='Internal OSC Calibration Control', cn='内部IRC起振去抖控制'))
 
-    TM2PS   = SFRModel('TM2PS',     0xFEA2, 1, 0x80, dict(en='Timer2 prescale', cn='定时器2时钟预分频寄存器'))
-    TM3PS   = SFRModel('TM3PS',     0xFEA3, 1, 0x80, dict(en='Timer3 prescale', cn='定时器3时钟预分频寄存器'))
-    TM4PS   = SFRModel('TM4PS',     0xFEA4, 1, 0x80, dict(en='Timer4 prescale', cn='定时器4时钟预分频寄存器'))
+    TM2PS   = SFRModel('TM2PS',     0xFEA2, 1, 0x00, dict(en='Timer2 prescale', cn='定时器2时钟预分频寄存器'))
+    TM3PS   = SFRModel('TM3PS',     0xFEA3, 1, 0x00, dict(en='Timer3 prescale', cn='定时器3时钟预分频寄存器'))
+    TM4PS   = SFRModel('TM4PS',     0xFEA4, 1, 0x00, dict(en='Timer4 prescale', cn='定时器4时钟预分频寄存器'))
 
     def __init__(self):
         super().__init__()
@@ -66,6 +66,8 @@ SFR(VRTRIM,          0xA6);
         self.IRC32KCR.output_code(self.verbose, self.lang)
         self.MCLKOCR.output_code(self.verbose, self.lang)
         self.CLKDIV.output_code(self.verbose, self.lang)
+        self.T2H.output_code(self.verbose, self.lang)
+        self.T2L.output_code(self.verbose, self.lang)
         self.P_SW2.reset()
         self.P_SW2.output_code(self.verbose, self.lang, force=True)
         print('')
