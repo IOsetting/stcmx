@@ -8,138 +8,276 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
 
     def __init__(self):
         super().__init__()
+
+        self.uart1: dict = {
+            'enabled': False,
+        }
+
         # SFR Bits
         self.MCLKOCRDIV = SFRBitsModel(
             self.MCLKOCR, 'MCLKOCRDIV', 0,
             {
                 'en': "Please input the out clock division, value in range [0, 127]\n" +
                       "  0:No output,\n" +
-                      "  1~127: output = SYSCLK/division\n[%s]:",
+                      "  1~127: output = SYSCLK/division",
                 'cn': "请输入时钟输出的分频系数, 取值范围[0, 127]\n" +
-                      "  0:无输出,\n" +
-                      "  1~127: 输出频率 = SYSCLK/分频系数\n[%s]:",
+                      "  0:不输出,\n" +
+                      "  1~127: 输出频率 = SYSCLK/分频系数",
             },
             len=7,
         )
+        """时钟输出分频系数, 0:不输出"""
 
         self.MCLKO_S = SFRBitsModel(
             self.MCLKOCR, 'MCLKO_S', 7,
             {
-                'en': "Please select the clock output pin:\n  0:P5.4, 1:P1.6\n[%s]:",
-                'cn': "请选择时钟输出PIN脚:\n  0:P5.4, 1:P1.6\n[%s]:",
+                'en': "Clock output pin",
+                'cn': "时钟输出PIN脚",
             },
-            options={'0': 0B0, '1': 0B1},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'P5.4', 'cn': 'P1.6'},
+                '1': {'en': 'P5.4', 'cn': 'P1.6'},
+            }
         )
+        """时钟输出PIN脚选择"""
 
         self.TR0 = SFRBitsModel(
             self.TCON, 'TR0', 4,
             {
-                'en': "Please select Timer0 running mode: 0:Stop, 1:Run\n[%s]:",
-                'cn': "是否运行Timer0? 0:停止, 1:运行\n[%s]:",
+                'en': "Timer0 Running",
+                'cn': "运行定时器0",
             },
-            options={'0': 0B0, '1': 0B1},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Stop', 'cn': '停止'},
+                '1': {'en': 'Run', 'cn': '运行'},
+            },
             sbit=True
         )
+        """时钟0是否开启"""
 
         self.TR1 = SFRBitsModel(
             self.TCON, 'TR1', 6,
             {
-                'en': "Please select Timer1 running mode: 0:Stop, 1:Run\n[%s]:",
-                'cn': "是否运行Timer1? 0:停止, 1:运行\n[%s]:",
+                'en': "Timer1 running",
+                'cn': "运行定时器1",
             },
-            options={'0': 0B0, '1': 0B1},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Stop', 'cn': '停止'},
+                '1': {'en': 'Run', 'cn': '运行'},
+            },
             sbit=True
         )
+        """时钟1是否开启"""
+
+        self.T2R = SFRBitsModel(
+            self.AUXR, 'T2R', 4,
+            {
+                'en': "Timer2 Run/Stop",
+                'cn': "运行定时器2",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Stop', 'cn': '停止'},
+                '1': {'en': 'Run', 'cn': '运行'},
+            },
+        )
+        """时钟2是否开启"""
 
         self.T0x12 = SFRBitsModel(
             self.AUXR, 'T0x12', 7,
             {
-                'en': "Please select Timer0 clock speed: 0:12T Mode, 1:1T Mode\n[%s]:",
-                'cn': "请设置定时器0速度(周期模式): 0:12T模式, 1:1T模式\n[%s]:",
+                'en': "Timer0 1T or 12T Mode",
+                'cn': "定时器0 1T模式/12T模式)",
             },
-            options={'0': 0B0, '1': 0B1},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': '12T Mode', 'cn': '12T模式'},
+                '1': {'en': '1T Mode', 'cn': '1T模式'},
+            },
         )
+        """定时器0是否使用1T模式"""
 
         self.T1x12 = SFRBitsModel(
             self.AUXR, 'T1x12', 6,
             {
-                'en': "Please select Timer1 clock speed: 0:12T Mode, 1:1T Mode\n[%s]:",
-                'cn': "请设置定时器1速度(周期模式): 0:12T模式, 1:1T模式\n[%s]:",
+                'en': "Timer1 1T or 12T Mode",
+                'cn': "定时器1 1T模式/12T模式)",
             },
-            options={'0': 0B0, '1': 0B1},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': '12T Mode', 'cn': '12T模式'},
+                '1': {'en': '1T Mode', 'cn': '1T模式'},
+            },
         )
+        """定时器1是否使用1T模式"""
+
+        self.T2x12 = SFRBitsModel(
+            self.AUXR, 'T2x12', 2,
+            {
+                'en': "Timer2 1T or 12T Mode",
+                'cn': "定时器2 1T模式/12T模式)",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': '12T Mode', 'cn': '12T模式'},
+                '1': {'en': '1T Mode', 'cn': '1T模式'},
+            },
+        )
+        """定时器2是否使用1T模式"""
 
         self.T0_CT = SFRBitsModel(
             self.TMOD, 'T0_CT', 2,
             {
-                'en': "Please select Timer0 function: 0:Timer, 1:Counter\n[%s]:",
-                'cn': "请选择定时器0功能: 0:定时器, 1:计数器\n[%s]:",
+                'en': "Timer0 function",
+                'cn': "定时器0功能",
             },
-            options={'0': 0B0, '1': 0B1},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Timer', 'cn': '定时'},
+                '1': {'en': 'Counter', 'cn': '计数'},
+            },
         )
+        """定时器0功能选择"""
 
         self.T1_CT = SFRBitsModel(
             self.TMOD, 'T1_CT', 6,
             {
-                'en': "Please select Timer1 function: 0:Timer, 1:Counter\n[%s]:",
-                'cn': "请选择定时器1功能: 0:定时器, 1:计数器\n[%s]:",
+                'en': "Timer1 function",
+                'cn': "定时器1功能",
             },
-            options={'0': 0B0, '1': 0B1},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Timer', 'cn': '定时'},
+                '1': {'en': 'Counter', 'cn': '计数'},
+            },
         )
+        """定时器1功能选择"""
+
+        self.T2_CT = SFRBitsModel(
+            self.AUXR, 'T2_CT', 3,
+            {
+                'en': "Timer2 function",
+                'cn': "定时器2功能",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Timer', 'cn': '定时'},
+                '1': {'en': 'Counter', 'cn': '计数'},
+            },
+        )
+        """定时器2功能选择"""
+
+        self.T0CLKO = SFRBitsModel(
+            self.INTCLKO, 'T0CLKO', 0,
+            {
+                'en': "Timer0 Clock Ouput",
+                'cn': "定时器0时钟输出",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'No output', 'cn': '关闭'},
+                '1': {'en': 'Output to P3.5', 'cn': '输出至P3.5'},
+            },
+        )
+        """定时器0时钟输出"""
+
+        self.T1CLKO = SFRBitsModel(
+            self.INTCLKO, 'T1CLKO', 1,
+            {
+                'en': "Timer1 Clock Ouput",
+                'cn': "定时器1时钟输出",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'No output', 'cn': '关闭'},
+                '1': {'en': 'Output to P3.4', 'cn': '输出至P3.4'},
+            },
+        )
+        """定时器1时钟输出"""
+
+        self.T2CLKO = SFRBitsModel(
+            self.INTCLKO, 'T2CLKO', 2,
+            {
+                'en': "Timer2 Clock Ouput",
+                'cn': "定时器2时钟输出",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'No output', 'cn': '关闭'},
+                '1': {'en': 'Output to P1.3', 'cn': '输出至P1.3'},
+            },
+        )
+        """定时器2时钟输出"""
 
         self.T0_GATE = SFRBitsModel(
             self.TMOD, 'T0_GATE', 3,
             {
-                'en': "Please select Timer0 work mode: 0:Normal, 1:Work only when INT0 and RT0 are high\n[%s]:",
-                'cn': "设置定时器0打开条件: 0:正常, 1:只有在INT0脚为高及TR0控制位置1时才可打开定时器/计数器0\n[%s]:",
+                'en': "Timer0 work mode",
+                'cn': "定时器0打开条件",
             },
-            options={'0': 0B0, '1': 0B1},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Normal', 'cn': '正常'},
+                '1': {'en': 'Work only when INT0 and RT0 are high', 'cn': '只有在INT0脚为高及TR0控制位置1时才可打开定时器/计数器0'},
+            },
         )
 
         self.T1_GATE = SFRBitsModel(
             self.TMOD, 'T1_GATE', 7,
             {
-                'en': "Please select Timer1 work mode: 0:Normal, 1:Work only when INT1 and RT1 are high\n[%s]:",
-                'cn': "设置定时器1打开条件: 0:正常, 1:只有在INT1脚为高及TR1控制位置1时才可打开定时器/计数器1\n[%s]:",
+                'en': "Timer1 work mode",
+                'cn': "定时器1打开条件",
             },
-            options={'0': 0B0, '1': 0B1},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Normal', 'cn': '正常'},
+                '1': {'en': 'Work only when INT1 and RT1 are high', 'cn': '只有在INT1脚为高及TR1控制位置1时才可打开定时器/计数器1'},
+            },
         )
 
         self.T0_MODE = SFRBitsModel(
             self.TMOD, 'T0_MODE', 0,
             {
-                'en': "Please select Timer0 timer mode:\n" +
-                      "  0:16bit auto-reload, [TH0,TL0] will auto-reload when overflow\n" +
-                      "  1:16bit no-auto-reload, [TH0,TL0] will start from 0 when overflow\n" +
-                      "  2:8bit auto-reload, TL0 will auto-reload from TH0 when overflow\n" +
-                      "  3:Non-interruptable 16bit auto-reload, highest priority\n[%s]:",
-                'cn': "请选择定时器0的定时器模式\n" +
-                      "  0:16位自动重载模式, 当[TH0,TL0]中的16位计数值溢出时，系统会自动将内部16位重载寄存器中的重载值装入[TH0,TL0]中\n" +
-                      "  1:16位不自动重载模式, 当[TH0,TL0]中的16位计数值溢出时，定时器1将从0开始计数\n" +
-                      "  2:8位自动重载模式, 当TL0中的8位计数值溢出时，系统会自动将TH0中的重载值装入TL0中\n" +
-                      "  3:不可屏蔽中断的16位自动重载模式, 与模式0相同，不可屏蔽, 中断优先级最高且不可关闭, 可用作操作系统的系统节拍定时器或系统监控定时器\n[%s]:",
+                'en': "Timer0 timer mode",
+                'cn': "定时器0的定时器模式",
             },
             len=2,
-            options={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {'en': '16bit auto-reload, [TH0,TL0] auto-reloads when overflow',
+                      'cn': '16位自动重载模式, 当[TH0,TL0]中的16位计数值溢出时，系统会自动将内部16位重载寄存器中的重载值装入[TH0,TL0]中'},
+                '1': {'en': '16bit no-auto-reload, [TH0,TL0] restart from 0 when overflow',
+                      'cn': '16位不自动重载模式, 当[TH0,TL0]中的16位计数值溢出时，定时器将从0开始计数'},
+                '2': {'en': '8bit auto-reload, TL0 auto-reloads from TH0 when overflow',
+                      'cn': '8位自动重载模式, 当TL0中的8位计数值溢出时，系统会自动将TH0中的重载值装入TL0中'},
+                '3': {'en': 'Non-interruptable 16bit auto-reload, highest priority',
+                      'cn': '不可屏蔽中断的16位自动重载模式, 与模式0相同，不可屏蔽, 中断优先级最高且不可关闭, 可用作操作系统的系统节拍定时器或系统监控定时器'},
+            }
         )
+        """T0计数模式选择"""
 
         self.T1_MODE = SFRBitsModel(
             self.TMOD, 'T1_MODE', 4,
             {
-                'en': "Please select Timer1 timer mode:\n" +
-                      "  0:16bit auto-reload, [TH1,TL1] will auto-reload when overflow\n" +
-                      "  1:16bit no-auto-reload, [TH1,TL1] will start from 0 when overflow\n" +
-                      "  2:8bit auto-reload, TL1 will auto-reload from TH1 when overflow\n" +
-                      "  3:Timer1 stop\n[%s]:",
-                'cn': "请选择定时器1的定时器模式\n" +
-                      "  0:16位自动重载模式, 当[TH1,TL1]中的16位计数值溢出时，系统会自动将内部16位重载寄存器中的重载值装入[TH1,TL1]中\n" +
-                      "  1:16位不自动重载模式, 当[TH1,TL1]中的16位计数值溢出时，定时器1将从0开始计数\n" +
-                      "  2:8位自动重载模式, 当TL1中的8位计数值溢出时，系统会自动将TH1中的重载值装入TL1中\n" +
-                      "  3:T1停止工作\n[%s]:",
+                'en': "Timer1 timer mode",
+                'cn': "定时器1的定时器模式",
             },
             len=2,
-            options={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {'en': '16bit auto-reload, [TH1,TL1] auto-reloads when overflow',
+                      'cn': '16位自动重载模式, 当[TH1,TL1]中的16位计数值溢出时，系统会自动将内部16位重载寄存器中的重载值装入[TH1,TL1]中'},
+                '1': {'en': '16bit no-auto-reload, [TH1,TL1] restart from 0 when overflow',
+                      'cn': '16位不自动重载模式, 当[TH1,TL1]中的16位计数值溢出时，定时器1将从0开始计数'},
+                '2': {'en': '8bit auto-reload, TL1 auto-reloads from TH1 when overflow',
+                      'cn': '8位自动重载模式, 当TL1中的8位计数值溢出时，系统会自动将TH1中的重载值装入TL1中'},
+                '3': {'en': 'Timer1 stop', 'cn': 'T1停止工作'},
+            }
         )
+        """T1计数模式选择"""
 
         # __init__ end
 
@@ -171,17 +309,51 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
             'cn': "==== 电源配置结束 ====",
         })
 
-    def define_uart(self):
+    def define_uart1(self):
         self.print({
-            'en': "==== UART CONFIG START ====",
-            'cn': "==== 串口配置开始 ====",
+            'en': "==== UART1 CONFIG START ====",
+            'cn': "==== 串口1配置开始 ====",
         })
-        self.uart1_mode_select()
+        # 选择串口1模式
+        mode = self.SCON_MODE.select(self.lang)
+        if mode == 0B00: # 模式0, 同步移位寄存器模式, 当UART_M0x6=0,波特率=SYSCLK/12, 当UART_M0x6=1时,波特率为SYSCLK/2
+            # 模式 1 和模式 0 为非多机通信方式，在这两种方式时，SM2 应设置为 0
+            self.SCON.set_bit(0B0, 5)
+            uart_m0x6 = self.UART_M0x6.select(self.lang)
+            if uart_m0x6 == 0B0:
+                self.uart1['baudRate'] = int(self.SYSCLK/12)
+            else:
+                self.uart1['baudRate'] = int(self.SYSCLK)
+            self.uart1['enabled'] = True
+        elif mode == 0B01: # 模式1
+            # 模式 1 和模式 0 为非多机通信方式，在这两种方式时，SM2 应设置为 0
+            self.SCON.set_bit(0B0, 5)
+            # 串口1模式1/2/3的双倍波特率模式
+            doubleBaudRateMode = self.SMOD.select(self.lang)
+            # 串口1模式1/3波特率来源
+            oscSource = self.S1ST2.select(self.lang)
+            if oscSource == 0B0: # 定时器1
+                print("TODO")
+            else: # 定时器2
+                print("TODO")
+
+
+        elif mode == 0B10:  # 模式2
+            # 串口1模式1/2/3的双倍波特率模式
+            doubleBaudRateMode = self.SMOD.select(self.lang)
+
+        else:  # 模式3
+            # 串口1模式1/2/3的双倍波特率模式
+            doubleBaudRateMode = self.SMOD.select(self.lang)
+            # 串口1模式1/3波特率来源
+            oscSource = self.S1ST2.select(self.lang)
+
+
+        # 启用接收
         self.SCON_REN.select(self.lang)
-        self.uart1_mode1_mode3_baud_rate_source_select()
-        self.uart1_mode0_baud_rate_control()
-        self.uart1_mode123_double_baud_rate_control()
-        self.uart1_frame_err_detect_control()
+        # 错误帧检测
+        self.SMOD0.select(self.lang)
+        self.uart1['enabled'] = True
         self.print({
             'en': "==== UART CONFIG END ====",
             'cn': "==== 串口配置结束 ====",
@@ -197,6 +369,7 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
         self.T0_CT.select(self.lang)
         self.T0_GATE.select(self.lang)
         self.T0_MODE.select(self.lang)
+        self.T0CLKO.select(self.lang)
         self.timer0_period_config()
         self.print({
             'en': "==== TIMER0 CONFIG END ====",
@@ -213,10 +386,28 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
         self.T1_CT.select(self.lang)
         self.T1_GATE.select(self.lang)
         self.T1_MODE.select(self.lang)
+        self.T1CLKO.select(self.lang)
         self.timer1_period_config()
         self.print({
-            'en': "==== TIMER1 CONFIG START ====",
+            'en': "==== TIMER1 CONFIG END ====",
             'cn': "==== 定时器1 配置结束 ====",
+        })
+
+    def define_timer2(self):
+        self.print({
+            'en': "==== TIMER2 CONFIG START ====",
+            'cn': "==== 定时器2 配置开始 ====",
+        })
+        self.T2R.select(self.lang)
+        self.T2x12.select(self.lang)
+        self.T2_CT.select(self.lang)
+        self.T2_GATE.select(self.lang)
+        self.T2_MODE.select(self.lang)
+        self.T2CLKO.select(self.lang)
+        self.timer1_period_config()
+        self.print({
+            'en': "==== TIMER2 CONFIG END ====",
+            'cn': "==== 定时器2 配置结束 ====",
         })
 
     """

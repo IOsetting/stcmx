@@ -33,7 +33,7 @@ class SFRModel:
                 or self.assignment is not None \
                 or force:
             if comment:
-                print("    # [%4XH,%1d,0x%02X]: %s" % (self.addr, self.region, self.def_val, self.desc[comment_lang]))
+                print("    // [%4XH,%1d,0x%02X]: %s" % (self.addr, self.region, self.def_val, self.desc[comment_lang]))
             if self.assignment is not None:
                 print("    %-10s = %s;" % (self.name, self.assignment))
             else:

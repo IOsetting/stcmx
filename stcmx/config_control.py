@@ -1,5 +1,6 @@
 
 class ConfigControl:
+
     def define_lang(self):
         pass
 
@@ -18,7 +19,7 @@ class ConfigControl:
     def define_power(self):
         pass
 
-    def define_uart(self):
+    def define_uart1(self):
         pass
 
     def define_timer0(self):

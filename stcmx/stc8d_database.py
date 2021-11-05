@@ -81,6 +81,8 @@ SFR(VRTRIM,          0xA6);
         self.TMOD.output_code(self.verbose, self.lang)
         self.TH0.output_code(self.verbose, self.lang)
         self.TL0.output_code(self.verbose, self.lang)
+        self.TH1.output_code(self.verbose, self.lang)
+        self.TL1.output_code(self.verbose, self.lang)
         print("}")
 
     def info(self):

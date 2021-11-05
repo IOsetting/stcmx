@@ -52,8 +52,8 @@ class Cli(cmd.Cmd):
     def do_timer1(self, line):
         self.codegen.define_timer1()
 
-    def do_uart(self, line):
-        self.codegen.define_uart()
+    def do_uart1(self, line):
+        self.codegen.define_uart1()
 
     def do_info(self, line):
         self.codegen.info()
