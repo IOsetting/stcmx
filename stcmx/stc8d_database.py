@@ -35,11 +35,14 @@ class Stc8dDatabase(Stc8Config):
     def generate(self):
         print("Code for current configuration:\n MCU Type: %s\n"%self.name)
         print('''
+#include "stc8d.h"
+#include "compiler.h"
+
 #define CPUIDBASE 0xFDE0
 
 SFRX(ID_ADDR,        CPUIDBASE + 0x00);
-SFR16LEX(VREF_ADDR,  CPUIDBASE + 0x07);
-SFR16LEX(F32K_ADDR,  CPUIDBASE + 0x09);
+SFRX(VREF_ADDR,      CPUIDBASE + 0x07);
+SFRX(F32K_ADDR,      CPUIDBASE + 0x09);
 SFRX(T22M_ADDR,      CPUIDBASE + 0x0b); // 22.1184MHz
 SFRX(T24M_ADDR,      CPUIDBASE + 0x0c); // 24MHz
 SFRX(T20M_ADDR,      CPUIDBASE + 0x0d); // 20MHz
@@ -55,7 +58,7 @@ SFRX(VRT10M_ADDR,    CPUIDBASE + 0x16); // VRTRIM_10M
 SFRX(VRT27M_ADDR,    CPUIDBASE + 0x17); // VRTRIM_27M
 SFRX(VRT44M_ADDR,    CPUIDBASE + 0x18); // VRTRIM_44M
 SFR(VRTRIM,          0xA6);
-        ''')
+''')
         print("void init()\n{")
         # extend ROM
         self.P_SW2.set_bits(0B1, 0B1, 7)
@@ -66,16 +69,16 @@ SFR(VRTRIM,          0xA6);
         self.IRC32KCR.output_code(self.verbose, self.lang)
         self.MCLKOCR.output_code(self.verbose, self.lang)
         self.CLKDIV.output_code(self.verbose, self.lang)
+        self.IRCBAND.output_code(self.verbose, self.lang)
+        self.VRTRIM.output_code(self.verbose, self.lang)
+        self.IRTRIM.output_code(self.verbose, self.lang)
+        self.LIRTRIM.output_code(self.verbose, self.lang)
         self.T2H.output_code(self.verbose, self.lang)
         self.T2L.output_code(self.verbose, self.lang)
         self.P_SW2.reset()
         self.P_SW2.output_code(self.verbose, self.lang, force=True)
         print('')
         # internal RAM
-        self.IRCBAND.output_code(self.verbose, self.lang)
-        self.VRTRIM.output_code(self.verbose, self.lang)
-        self.IRTRIM.output_code(self.verbose, self.lang)
-        self.LIRTRIM.output_code(self.verbose, self.lang)
         self.SCON.output_code(self.verbose, self.lang)
         self.PCON.output_code(self.verbose, self.lang)
         self.AUXR.output_code(self.verbose, self.lang)
