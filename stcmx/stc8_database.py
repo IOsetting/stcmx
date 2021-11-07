@@ -80,9 +80,9 @@ class Stc8Database(object):
             values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
             options={
                 '0': {'en': 'No adjust', 'cn': '无调整'},
-                '1': {'en': '+0.01%%', 'cn': '+0.01%%'},
-                '2': {'en': '+0.04%%', 'cn': '+0.04%%'},
-                '3': {'en': '+0.10%%', 'cn': '+0.10%%'},
+                '1': {'en': '+0.01%', 'cn': '+0.01%'},
+                '2': {'en': '+0.04%', 'cn': '+0.04%'},
+                '3': {'en': '+0.10%', 'cn': '+0.10%'},
             }
         )
         """频率微调级别"""
@@ -90,8 +90,8 @@ class Stc8Database(object):
         self.CLKDIV_0 = SFRBitsModel(
             self.CLKDIV, "CLKDIV_0", 0,
             {
-                'en': "Please input the division number, value in range [0, 255], SYSCLK = FOSC / division",
-                'cn': "请输入系统时钟 SYSCLK 的分频数字, 取值在[0, 255]区间内, 系统时钟(SYSCLK) = FOSC / 分频数",
+                'en': "SYSCLK division number, value in range [0, 255], SYSCLK = FOSC / division",
+                'cn': "系统时钟 SYSCLK 的分频系数, 取值在[0, 255]区间内, 系统时钟(SYSCLK) = FOSC / 分频系数",
             },
             len=8
         )

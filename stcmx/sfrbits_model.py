@@ -39,10 +39,26 @@ class SFRBitsModel:
 
     def get_selection(self):
         value = self.get_value()
-        for k, v in self.values.items():
-            if v == value:
-                return k
+        if self.values is None:
+            return None
+        else:
+            for k, v in self.values.items():
+                if v == value:
+                    return k
         return None
+
+    def get_info(self, lang:str):
+        if self.values is None or self.options is None:
+            return self.prompt[lang] + ': ' + "0x%02x"%self.get_value()
+        else:
+            return self.prompt[lang] + ': ' + self.get_selected_option(lang)
+
+    def get_selected_option(self, lang:str):
+        k = self.get_selection()
+        if k is None:
+            return None
+        else:
+            return self.options[k][lang]
 
     def set_selection(self, key):
         value = self.values[key]

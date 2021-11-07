@@ -1,7 +1,8 @@
 from stcmx.sfr_model import SFRModel
 from stcmx.sfrbits_model import SFRBitsModel
+from stcmx.selection_model import SelectionModel
+from stcmx.value_model import ValueModel
 from stcmx.stc8_config import Stc8Config
-import stcmx.util as util
 
 
 class Stc8dDatabase(Stc8Config):
@@ -36,16 +37,57 @@ class Stc8dDatabase(Stc8Config):
         self.TM3PS = SFRModel('TM3PS', 0xFEA3, 1, 0x00, dict(en='Timer3 prescale', cn='定时器3时钟预分频寄存器'))
         self.TM4PS = SFRModel('TM4PS', 0xFEA4, 1, 0x00, dict(en='Timer4 prescale', cn='定时器4时钟预分频寄存器'))
 
+        # Shadow Configs
+
+        self.MX_FOSC = ValueModel(
+            'MX_FOSC',
+            11059200,
+            {
+                'en': "OSC/CLK frequency, value in range [4000000, 55000000]",
+                'cn': "振荡源或时钟频率, 值在[4000000, 55000000]区间内",
+            },
+            valid=lambda a: 4000000 <= a <= 53000000,
+        )
+
+        self.MX_CLOCK = SelectionModel(
+            'MX_CLOCK',
+            '1',
+            {
+                'en': 'Select frequency',
+                'cn': '选择频率',
+            },
+            {
+                '0': {'en': '20MHz', 'cn': '20MHz'},
+                '1': {'en': '22.1184MHz', 'cn': '22.1184MHz'},
+                '2': {'en': '24MHz', 'cn': '24MHz'},
+                '3': {'en': '27MHz', 'cn': '27MHz'},
+                '4': {'en': '30MHz', 'cn': '30MHz'},
+                '5': {'en': '33.1776MHz', 'cn': '33.1776MHz'},
+                '6': {'en': '35MHz', 'cn': '35MHz'},
+                '7': {'en': '36.864MHz', 'cn': '36.864MHz'},
+                '8': {'en': '40MHz', 'cn': '40MHz'},
+                '9': {'en': '45MHz', 'cn': '45MHz'},
+            },
+            {
+                '0': ['T20M_ADDR', 20000000],
+                '1': ['T22M_ADDR', 22118400],
+                '2': ['T24M_ADDR', 24000000],
+                '3': ['T27M_ADDR', 27000000],
+                '4': ['T30M_ADDR', 30000000],
+                '5': ['T33M_ADDR', 33177600],
+                '6': ['T35M_ADDR', 35000000],
+                '7': ['T36M_ADDR', 36864000],
+                '8': ['T40M_ADDR', 40000000],
+                '9': ['T45M_ADDR', 45000000],
+            }
+        )
+
         # SFR Bits
         self.MCLKOCRDIV = SFRBitsModel(
             self.MCLKOCR, 'MCLKOCRDIV', 0,
             {
-                'en': "Please input the out clock division, value in range [0, 127]\n" +
-                      "  0:No output,\n" +
-                      "  1~127: output = SYSCLK/division",
-                'cn': "请输入时钟输出的分频系数, 取值范围[0, 127]\n" +
-                      "  0:不输出,\n" +
-                      "  1~127: 输出频率 = SYSCLK/分频系数",
+                'en': "Clock output division, value in range [0, 127], 0 means no output, for other values, output = SYSCLK/division",
+                'cn': "时钟输出的分频系数, 取值范围[0, 127], 0表示不输出, 其他值, 则输出频率为SYSCLK/分频系数",
             },
             len=7,
         )
@@ -311,42 +353,3 @@ class Stc8dDatabase(Stc8Config):
             }
         )
         """T1计数模式选择"""
-
-    def generate(self):
-        print("Code for current configuration:\n MCU Type: %s\n"%self.name)
-        print('''#include "stc8a8k64d4.h"
-''')
-        print("void init()\n{")
-        # extend ROM
-        self.P_SW2.set_bits(0B1, 0B1, 7)
-        self.P_SW2.output_code(self.verbose, self.lang, force=True)
-        self.CKSEL.output_code(self.verbose, self.lang)
-        self.HIRCCR.output_code(self.verbose, self.lang)
-        self.XOSCCR.output_code(self.verbose, self.lang)
-        self.IRC32KCR.output_code(self.verbose, self.lang)
-        self.MCLKOCR.output_code(self.verbose, self.lang)
-        self.CLKDIV.output_code(self.verbose, self.lang)
-        self.IRCBAND.output_code(self.verbose, self.lang)
-        self.VRTRIM.output_code(self.verbose, self.lang)
-        self.IRTRIM.output_code(self.verbose, self.lang)
-        self.LIRTRIM.output_code(self.verbose, self.lang)
-        self.T2H.output_code(self.verbose, self.lang)
-        self.T2L.output_code(self.verbose, self.lang)
-        self.P_SW2.reset()
-        self.P_SW2.output_code(self.verbose, self.lang, force=True)
-        print('')
-        # internal RAM
-        self.SCON.output_code(self.verbose, self.lang)
-        self.PCON.output_code(self.verbose, self.lang)
-        self.AUXR.output_code(self.verbose, self.lang)
-        self.TCON.output_code(self.verbose, self.lang)
-        self.TMOD.output_code(self.verbose, self.lang)
-        self.TH0.output_code(self.verbose, self.lang)
-        self.TL0.output_code(self.verbose, self.lang)
-        self.TH1.output_code(self.verbose, self.lang)
-        self.TL1.output_code(self.verbose, self.lang)
-        print("}")
-
-    def info(self):
-        print("/** FOSC: %s, SYSCLK: %s */" % (
-             util.format_frequency(self.FOSC), util.format_frequency(self.SYSCLK)))
