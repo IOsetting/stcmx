@@ -1,5 +1,6 @@
 from stcmx.sfr_model import SFRModel
 from stcmx.sfrbits_model import SFRBitsModel
+from stcmx.selection_model import SelectionModel
 
 class Stc8Database(object):
     """Database that holds SFR information."""
@@ -12,6 +13,22 @@ class Stc8Database(object):
         self.FOSC:int = 11059200
         # System clock
         self.SYSCLK:int = 11059200
+
+        self.MX_LANG = SelectionModel(
+            'MX_LANG', '0',
+            {
+                'en': "Select language",
+                'cn': "选择语言",
+            },
+            {
+                '0': {'en': 'English', 'cn': 'English'},
+                '1': {'en': '中文', 'cn': '中文'},
+            },
+            {
+                '0': 'en',
+                '1': 'cn',
+            }
+        )
 
         # Basic SFR
         self.LIRTRIM = SFRModel('LIRTRIM', 0x9E, 0, 0x00, dict(en='Internal OSC Frequency Adjust', cn='IRC频率微调寄存器'))
@@ -176,6 +193,20 @@ class Stc8Database(object):
         )
         """串口1是否开启RX"""
 
+        self.SM2 = SFRBitsModel(
+            self.SCON, 'SM2', 5,
+            {
+                'en': "UART1 Mode2/3 multi-node-communication filter control",
+                'cn': "串口1模式2/3多机通信地址帧筛选控制",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'No address frame filter', 'cn': '无帧筛选'},
+                '1': {'en': 'Enable address frame filter', 'cn': '启用地址帧筛选'},
+            }
+        )
+        """串口1模式2/3多机通信地址帧筛选控制位"""
+
         self.S1ST2 = SFRBitsModel(
             self.AUXR, 'S1ST2', 0,
             {
@@ -207,13 +238,13 @@ class Stc8Database(object):
         self.SMOD = SFRBitsModel(
             self.PCON, 'SMOD', 7,
             {
-                'en': "UART1(mode1,2,3) baud rate double mode",
+                'en': "UART1(mode1,2,3) double baud rate mode",
                 'cn': "串口1模式1/2/3 双倍波特率模式",
             },
             values={'0': 0B0, '1': 0B1},
             options={
-                '0': {'en': 'No double', 'cn': '不使用'},
-                '1': {'en': 'Double baud rate', 'cn': '双倍波特率模式'},
+                '0': {'en': 'OFF', 'cn': '不使用'},
+                '1': {'en': 'ON, double baud rate', 'cn': '双倍波特率模式'},
             }
         )
         """双倍波特率模式, 仅对状态1/2/3有效"""
@@ -232,20 +263,9 @@ class Stc8Database(object):
             }
         )
 
-
-
-
     def define_lang(self):
-        languages = {'0': 'en', '1': 'cn'}
-        while True:
-            arg = self.input({
-                'en': "Please select lanuage, Currently [%r]\n0: English, 1: 中文\n:"%self.lang,
-                'cn': "请选择语言, 当前设置[%r]:\n0: English, 1: 中文\n:"%self.lang,
-            })
-            if len(arg) > 0:
-                if arg in languages.keys():
-                    self.lang = languages[arg]
-                    break
+        v = self.MX_LANG.select(self.lang)
+        self.lang = v
 
     def define_verbose(self):
         while True:
