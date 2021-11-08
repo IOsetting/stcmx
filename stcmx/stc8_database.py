@@ -31,11 +31,12 @@ class Stc8Database(object):
         self.S2CON   = SFRModel('S2CON',   0x9A, 0, 0x40, dict(en='UART2 Control', cn='串口2控制寄存器'))
         self.S2BUF   = SFRModel('S2BUF',   0x9B, 0, 0x00, dict(en='UART2 Data', cn='串口2数据寄存器'))
         self.IRTRIM  = SFRModel('IRTRIM',  0x9F, 0, 0x00, dict(en='Internal OSC Frequency Control', cn='IRC频率调整寄存器'))
-        self.S3CON   = SFRModel('S3CON',   0xAC, 0, 0x00, dict(en='UART3 Control', cn='串口3控制寄存器'))
-        self.S3BUF   = SFRModel('S3BUF',   0xAD, 0, 0x00, dict(en='UART3 Data', cn='串口3数据寄存器'))
+        self.IE      = SFRModel('IE',      0xA8, 0, 0x00, dict(en='Interrupt Enable', cn='中断允许寄存器'))
         self.SADDR   = SFRModel('SADDR',   0xA9, 0, 0x00, dict(en='UART1 Slave Address', cn='串口1从机地址寄存器'))
         self.WKTCL   = SFRModel('WKTCL',   0xAA, 0, 0x00, dict(en='Wakup Timer Low Byte', cn='掉电唤醒定时器低字节'))
         self.WKTCH   = SFRModel('WKTCL',   0xAB, 0, 0x00, dict(en='Wakeup Timer High Byte', cn='掉电唤醒定时器高字节'))
+        self.S3CON   = SFRModel('S3CON',   0xAC, 0, 0x00, dict(en='UART3 Control', cn='串口3控制寄存器'))
+        self.S3BUF   = SFRModel('S3BUF',   0xAD, 0, 0x00, dict(en='UART3 Data', cn='串口3数据寄存器'))
         self.SADEN   = SFRModel('SADEN',   0xB9, 0, 0x00, dict(en='UART1 Slave Deny Address', cn='串口1从机地址屏蔽寄存'))
         self.P_SW2   = SFRModel('P_SW2',   0xBA, 0, 0x00, dict(en='Peripheral Port Switch', cn='外设端口切换寄存器2'))
         self.PSW     = SFRModel('PSW',     0xD0, 0, 0x00, dict(en='Program Status', cn='程序状态字寄存器'))
@@ -104,12 +105,11 @@ class Stc8Database(object):
                 'cn': "MCU时钟源",
             },
             len=2,
-            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            values={'0': 0B00, '1': 0B01, '2': 0B11},
             options={
-                '0': {'en': 'Internal High Frequency Oscillator', 'cn': '内置高频震荡器'},
-                '1': {'en': 'External Oscillator', 'cn': '外置晶振'},
-                '2': {'en': 'External Clock Source', 'cn': '外部时钟源'},
-                '3': {'en': 'Internal 32KHz Oscillator', 'cn': '内置32KHz低频晶振'},
+                '0': {'en': 'Internal High Frequency RC OSC', 'cn': '内置高频震荡器'},
+                '1': {'en': 'External Clock or Crystal OSC', 'cn': '外部时钟或外置晶振'},
+                '2': {'en': 'Internal 32KHz Oscillator', 'cn': '内置32KHz低频晶振'},
             }
         )
         """时钟源选择"""

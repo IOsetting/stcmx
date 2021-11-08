@@ -41,7 +41,7 @@ class Stc8dDatabase(Stc8Config):
 
         self.MX_FOSC = ValueModel(
             'MX_FOSC',
-            11059200,
+            24000000,
             {
                 'en': "OSC/CLK frequency, value in range [4000000, 55000000]",
                 'cn': "振荡源或时钟频率, 值在[4000000, 55000000]区间内",
@@ -83,6 +83,99 @@ class Stc8dDatabase(Stc8Config):
         )
 
         # SFR Bits
+        self.ENHIRC = SFRBitsModel(
+            self.HIRCCR, 'ENHIRC', 7,
+            {
+                'en': "Internal High Frequency RC OSC",
+                'cn': "内部高频RC振荡器",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '打开'},
+            }
+        )
+
+        self.ENXOSC = SFRBitsModel(
+            self.XOSCCR, 'ENXOSC', 7,
+            {
+                'en': "External OSC",
+                'cn': "外部时钟源",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '打开'},
+            }
+        )
+
+        self.XITYPE = SFRBitsModel(
+            self.XOSCCR, 'XITYPE', 6,
+            {
+                'en': "External OSC Type",
+                'cn': "外部时钟源类型",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'External Clock, Need To Use P1.7', 'cn': '外部时钟源或有源晶振,需要占用P1.7'},
+                '1': {'en': 'External Crystal OSC, Need P1.6&P1.7', 'cn': '无源晶振, 需要占用P1.6和P1.7'},
+            }
+        )
+
+        self.NMXCG = SFRBitsModel(
+            self.XOSCCR, 'NMXCG', 3,
+            {
+                'en': "External Crystal OSC Gain",
+                'cn': "外部晶体振荡器增益",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Low', 'cn': '低增益'},
+                '1': {'en': 'High', 'cn': '高增益'},
+            }
+        )
+
+        self.ENIRC32K = SFRBitsModel(
+            self.IRC32KCR, 'ENIRC32K', 7,
+            {
+                'en': "Internal 32K OSC",
+                'cn': "内部32K振荡源",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '打开'},
+            }
+        )
+        """内部32K低频振荡器开关"""
+
+        self.IRCBAND_SEL = SFRBitsModel(
+            self.IRCBAND, 'IRCBAND_SEL', 0,
+            {
+                'en': "IRC Frequency Band",
+                'cn': "频段选择",
+            },
+            len=2,
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {'en': '6MHz', 'cn': '6MHz'},
+                '1': {'en': '10MHz', 'cn': '10MHz'},
+                '2': {'en': '27MHz', 'cn': '27MHz'},
+                '3': {'en': '44MHz', 'cn': '44MHz'},
+            }
+        )
+        """内部时钟振荡器频段选择"""
+
+        self.IRTRIM_S = SFRBitsModel(
+            self.IRTRIM, "IRTRIM_S", 0,
+            {
+                'en': "Internal OSC Frequency Adjust, value in range [0, 255], each step increase by around 0.24%",
+                'cn': "内部时钟振荡器频率调整, 取值范围[0, 255], 每级增加大约0.24%",
+            },
+            len=8,
+        )
+        """频率微调级别"""
+
         self.MCLKOCRDIV = SFRBitsModel(
             self.MCLKOCR, 'MCLKOCRDIV', 0,
             {
@@ -111,7 +204,7 @@ class Stc8dDatabase(Stc8Config):
             self.TCON, 'TR0', 4,
             {
                 'en': "Timer0 Running",
-                'cn': "运行定时器0",
+                'cn': "定时器0运行状态",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -126,7 +219,7 @@ class Stc8dDatabase(Stc8Config):
             self.TCON, 'TR1', 6,
             {
                 'en': "Timer1 running",
-                'cn': "运行定时器1",
+                'cn': "定时器1运行状态",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -141,7 +234,7 @@ class Stc8dDatabase(Stc8Config):
             self.AUXR, 'T2R', 4,
             {
                 'en': "Timer2 Run/Stop",
-                'cn': "运行定时器2",
+                'cn': "定时器2运行状态",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -280,7 +373,7 @@ class Stc8dDatabase(Stc8Config):
         self.TM2PS_V = SFRBitsModel(
             self.TM2PS, 'TM2PS_V', 0,
             {
-                'en': '',
+                'en': 'Timer2 Prescale',
                 'cn': '定时器2 八位预分频系数'
             },
             len=8

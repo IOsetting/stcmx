@@ -48,7 +48,9 @@ class SFRBitsModel:
         return None
 
     def get_info(self, lang:str):
-        if self.values is None or self.options is None:
+        if self.sfr.assignment is not None:
+            return self.prompt[lang] + ': assigned by %s' % self.sfr.assignment
+        elif self.values is None or self.options is None:
             return self.prompt[lang] + ': ' + "0x%02x"%self.get_value()
         else:
             return self.prompt[lang] + ': ' + self.get_selected_option(lang)

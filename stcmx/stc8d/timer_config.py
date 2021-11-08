@@ -14,6 +14,7 @@ class TimerConfig:
 
     def info(self):
         mcu = self.base
+
         # timer0
         print(mcu.TR0.get_info(mcu.lang))
         print(mcu.T0x12.get_info(mcu.lang))
@@ -24,16 +25,49 @@ class TimerConfig:
         if mcu.T0_MODE.get_value() == 0B10:
             thl = mcu.TH0.val
         else:
-            thl = mcu.TH0.val << 8 + mcu.TL0.val
+            thl = (mcu.TH0.val << 8) + mcu.TL0.val
         print("TIMER0 Freq: %d" % self.timer0and1_freq_calculate(
             mcu.T0x12.get_value() == 0B1,
             mcu.T0_MODE.get_value() == 0B10,
             thl
         ))
+        print('')
+        # timer1
+        print(mcu.TR1.get_info(mcu.lang))
+        print(mcu.T1x12.get_info(mcu.lang))
+        mode_1t = mcu.T1x12.get_value()
+        print(mcu.T1_CT.get_info(mcu.lang))
+        print(mcu.T1_GATE.get_info(mcu.lang))
+        print(mcu.T1CLKO.get_info(mcu.lang))
+        print(mcu.T1_MODE.get_info(mcu.lang))
+        t1mode = mcu.T1_MODE.get_value()
+        if t1mode == 0B10: #mode_2
+            thl = mcu.TH1.val
+        else:
+            thl = (mcu.TH1.val << 8) + mcu.TL1.val
+        print("TIMER1 Freq: %d" % self.timer0and1_freq_calculate(mode_1t == 0B1, t1mode == 0B10, thl))
+        print('')
+        # timer2
+        print(mcu.T2R.get_info(mcu.lang))
+        print(mcu.T2x12.get_info(mcu.lang))
+        mode_1t = mcu.T2x12.get_value()
+        print(mcu.T2_CT.get_info(mcu.lang))
+        print(mcu.T2CLKO.get_info(mcu.lang))
+        print(mcu.TM2PS_V.get_info(mcu.lang))
+        tm2ps = mcu.TM2PS_V.get_value()
+        thl = (mcu.T2H.val << 8) + mcu.T2L.val
+        print("TIMER2 Freq: %d" % self.timer2_freq_calculate(mode_1t == 0B1, tm2ps, thl))
 
     def generate(self):
         mcu = self.base
         print("void timer_init()\n{")
+        mcu.P_SW2.set_bits(0B1, 0B1, 7)
+        mcu.P_SW2.output_code(mcu.verbose, mcu.lang, force=True)
+        mcu.T2H.output_code(mcu.verbose, mcu.lang)
+        mcu.T2L.output_code(mcu.verbose, mcu.lang)
+        mcu.TM2PS.output_code(mcu.verbose, mcu.lang)
+        mcu.P_SW2.reset()
+        mcu.P_SW2.output_code(mcu.verbose, mcu.lang, force=True)
         # internal RAM
         mcu.PCON.output_code(mcu.verbose, mcu.lang)
         mcu.AUXR.output_code(mcu.verbose, mcu.lang)
@@ -43,6 +77,9 @@ class TimerConfig:
         mcu.TL0.output_code(mcu.verbose, mcu.lang)
         mcu.TH1.output_code(mcu.verbose, mcu.lang)
         mcu.TL1.output_code(mcu.verbose, mcu.lang)
+        mcu.INTCLKO.output_code(mcu.verbose, mcu.lang)
+
+
         print("}")
 
     def timer0_config(self):
@@ -212,7 +249,7 @@ class TimerConfig:
             mcu.T2CLKO.set_value(0B0)  # 关闭输出
             tm2ps = 0 # 串口使用定时器2时, 不使用预分频
 
-        else: # 普通模式, 直接配置定时器1
+        else: # 普通模式, 直接配置定时器2
             mcu.T2R.select(mcu.lang)
             mode_1t = mcu.T2x12.select(mcu.lang) == 0B1
             mcu.T2_CT.select(mcu.lang)
@@ -224,10 +261,10 @@ class TimerConfig:
 
     def timer2_period_config(self, tm2ps, mode_1t: bool, uart_mode: bool = False):
         mcu = self.base
-        tm2ps = tm2ps + 1 # SYSCLK / (TM2PS + 1)
+        thl = (mcu.T2H.val << 8) + mcu.T2L.val
         lb = self.timer2_freq_calculate(mode_1t, tm2ps, 0, uart_mode)
         hb = self.timer2_freq_calculate(mode_1t, tm2ps, 65535, uart_mode)
-        val = lb
+        val = self.timer2_freq_calculate(mode_1t, tm2ps, thl)
 
         while True:
             arg = mcu.input({
@@ -249,7 +286,8 @@ class TimerConfig:
         if uart_mode: # uart不使用TM2PS预分频
             return (mcu.SYSCLK / (65536 - thl) / 4) if mode_1t else (mcu.SYSCLK / (65536 - thl) / 4 / 12)
         else:
-            return (mcu.SYSCLK / (65536 - thl) / tm2ps) if mode_1t else (mcu.SYSCLK / (65536 - thl) / tm2ps / 12)
+            # SYSCLK / (TM2PS + 1)
+            return (mcu.SYSCLK / (65536 - thl) / (tm2ps + 1)) if mode_1t else (mcu.SYSCLK / (65536 - thl) / (tm2ps + 1) / 12)
 
     def timer2_thl_calculate(self, mode_1t: bool, tm2ps: int, freq, uart_mode: bool = False):
         """根据定时器2的频率, 计算TH/TL"""
@@ -257,4 +295,5 @@ class TimerConfig:
         if uart_mode: # uart不使用TM2PS预分频
             return int(65536 - (mcu.SYSCLK / freq / 4)) if mode_1t else int(65536 - (mcu.SYSCLK / freq / 4 / 12))
         else:
-            return int(65536 - (mcu.SYSCLK / freq / tm2ps)) if mode_1t else int(65536 - (mcu.SYSCLK / freq / tm2ps / 12))
+            # SYSCLK / (TM2PS + 1)
+            return int(65536 - (mcu.SYSCLK / freq / (tm2ps + 1))) if mode_1t else int(65536 - (mcu.SYSCLK / freq / (tm2ps + 1) / 12))

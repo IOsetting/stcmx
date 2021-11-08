@@ -18,20 +18,35 @@ class UartConfig:
         print(mcu.SCON_MODE.get_info(mcu.lang))
         mode = mcu.SCON_MODE.get_value()
         if mode == 0B00:
-            # 模式 1 和模式 0 为非多机通信方式，在这两种方式时，SM2 应设置为 0
             print(mcu.UART_M0x6.get_info(mcu.lang))
+            uart_m0x6 = mcu.UART_M0x6.get_value()
+            if uart_m0x6 == 0B0:
+                mcu.uart1['baudRate'] = int(mcu.SYSCLK / 12)
+            else:
+                mcu.uart1['baudRate'] = int(mcu.SYSCLK)
             print("UART1 BaudRate: %d" % mcu.uart1['baudRate'])
 
         # 模式1, 波特率与时钟1/时钟2关联
         elif mode == 0B01:
             # 模式 1 和模式 0 为非多机通信方式，在这两种方式时，SM2 应设置为 0
             print(mcu.SMOD.get_info(mcu.lang))
+            uart_rate_double = mcu.SMOD.get_value() == 0B1
             print(mcu.S1ST2.get_info(mcu.lang))
             oscSource = mcu.S1ST2.get_value()
             if oscSource == 0B0:  # 定时器1
-                print('TODO')
+                mode_1t = mcu.T1x12.get_value()
+                t1mode = mcu.T1_MODE.get_value()
+                if t1mode == 0B10:  # mode_2
+                    thl = mcu.TH1.val
+                else:
+                    thl = (mcu.TH1.val << 8) + mcu.TL1.val
+                baudRate = mcu.timer_config.timer0and1_freq_calculate(mode_1t == 0B1, t1mode == 0B10, thl, True, uart_rate_double)
             else:  # 定时器2
-                print('TODO')
+                mode_1t = mcu.T2x12.get_value()
+                tm2ps = mcu.TM2PS_V.get_value()
+                thl = (mcu.T2H.val << 8) + mcu.T2L.val
+                baudRate = mcu.timer_config.timer2_freq_calculate(mode_1t == 0B1, tm2ps, thl, True)
+            print("UART1 Freq: %d" % baudRate)
 
         # 模式2
         elif mode == 0B10:

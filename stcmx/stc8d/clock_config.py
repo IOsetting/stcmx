@@ -18,8 +18,9 @@ class ClockConfig:
         mcu = self.base
         value = mcu.MCKSEL.select(mcu.lang)
         if value == 0B00:  # 使用内部RC
-            mcu.XOSCCR.reset()
-            mcu.IRC32KCR.reset()
+            mcu.ENHIRC.set_value(0B1)
+            mcu.ENXOSC.set_value(0B0)
+            mcu.ENIRC32K.set_value(0B0)
             mcu.MX_CLOCK.select(mcu.lang)
             mcu.IRTRIM.assignment = mcu.MX_CLOCK.get_value()[0]
             mcu.MX_FOSC.set_value(mcu.MX_CLOCK.get_value()[1])
@@ -41,11 +42,12 @@ class ClockConfig:
             elif value == 0B11:
                 mcu.FOSC = int(mcu.MX_FOSC.get_value() * 1.001)
 
-        elif value == 0B01:
-            mcu.HIRCCR.set_bits(0B0, 0B1, 7)
-            mcu.XOSCCR.set_bits(0B1, 0B1, 7)
-            mcu.XOSCCR.set_bits(0B1, 0B1, 6)
-            mcu.IRC32KCR.reset()
+        elif value == 0B01: # 外部时钟源或晶振
+            mcu.ENHIRC.set_value(0B0)
+            mcu.ENXOSC.set_value(0B1)
+            mcu.ENIRC32K.set_value(0B0)
+            mcu.XITYPE.select(mcu.lang)
+            mcu.NMXCG.select(mcu.lang)
             v = mcu.MX_FOSC.input(mcu.lang)
             mcu.FOSC = v
             mcu.IRCBAND.reset()
@@ -80,9 +82,14 @@ class ClockConfig:
     def info(self):
         mcu = self.base
         print(mcu.MCKSEL.get_info(mcu.lang))
+        print(mcu.ENHIRC.get_info(mcu.lang))
+        print(mcu.ENXOSC.get_info(mcu.lang))
+        print(mcu.ENIRC32K.get_info(mcu.lang))
         if mcu.MCKSEL.get_value() == 0B00:
             print(mcu.MX_CLOCK.get_info(mcu.lang))
             print(mcu.MX_FOSC.get_info(mcu.lang))
+            print(mcu.IRCBAND_SEL.get_info(mcu.lang))
+            print(mcu.IRTRIM_S.get_info(mcu.lang))
             print(mcu.LIRTRIM_0.get_info(mcu.lang))
             # calculate fosc and sysclk
             base_fosc = mcu.MX_CLOCK.get_value()[1]
@@ -96,12 +103,10 @@ class ClockConfig:
                 fosc = base_fosc * (1 + 0.001)
 
         elif mcu.MCKSEL.get_value() == 0B01:
+            print(mcu.XITYPE.get_info(mcu.lang))
             print(mcu.MX_FOSC.get_info(mcu.lang))
             fosc = mcu.MX_FOSC.get_value()
-        elif mcu.MCKSEL.get_value() == 0B10:
-            print(mcu.MX_FOSC.get_info(mcu.lang))
-            fosc = mcu.MX_FOSC.get_value()
-        else:
+        elif mcu.MCKSEL.get_value() == 0B11:
             print(mcu.MX_FOSC.get_info(mcu.lang))
             fosc = mcu.MX_FOSC.get_value()
 

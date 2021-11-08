@@ -577,9 +577,9 @@ SFR(RSTCFG,             0xFF);
 #define     MCK_XOSC                0x01
 #define     MCK_IRC32K              0x03
 #define     CLKDIV                  (*(unsigned char volatile xdata *)0xfe01)
-#define     IRC24MCR                (*(unsigned char volatile xdata *)0xfe02)
-#define     ENIRC24M                0x80
-#define     IRC24MST                0x01
+#define     HIRCCR                  (*(unsigned char volatile xdata *)0xfe02)
+#define     ENHIRC                  0x80
+#define     HIRCST                  0x01
 #define     XOSCCR                  (*(unsigned char volatile xdata *)0xfe03)
 #define     ENXOSC                  0x80
 #define     XITYPE                  0x40
@@ -590,7 +590,7 @@ SFR(RSTCFG,             0xFF);
 #define     MCLKOCR                 (*(unsigned char volatile xdata *)0xfe05)
 #define     MCLKO_S                 0x80
 #define     IRCDB                   (*(unsigned char volatile xdata *)0xfe06)
-                                    
+
 #define     P0PU                    (*(unsigned char volatile xdata *)0xfe10)
 #define     P1PU                    (*(unsigned char volatile xdata *)0xfe11)
 #define     P2PU                    (*(unsigned char volatile xdata *)0xfe12)

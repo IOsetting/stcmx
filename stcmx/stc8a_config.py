@@ -18,7 +18,12 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
         self.clock_source_select()
         self.set_fosc()
         self.frequency_adjust()
-        self.set_sysclock_division()
+        v = self.CLKDIV_0.select(self.lang)
+        # 设置时钟输出
+        v = self.MCLKODIV.select(self.lang)
+        if v != 0x00:
+            # 时钟输出脚选择
+            self.MCLKO_S.select(self.lang)
         self.print({
             'en': "==== SYSTEM CLOCK CONFIG END ====",
             'cn': "==== 系统时钟配置结束 ====",
