@@ -61,6 +61,21 @@ class Cli(cmd.Cmd):
     def do_adc(self, line):
         self.codegen.define_adc()
 
+    def do_pca(self, lang):
+        self.codegen.define_pca()
+
+    def do_pca0(self, lang):
+        self.codegen.define_pca0()
+
+    def do_pca1(self, lang):
+        self.codegen.define_pca1()
+
+    def do_pca2(self, lang):
+        self.codegen.define_pca2()
+
+    def do_pca3(self, lang):
+        self.codegen.define_pca3()
+
     def do_info(self, line):
         self.codegen.info()
 

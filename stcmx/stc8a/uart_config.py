@@ -143,3 +143,5 @@ class UartConfig:
         mcu.SCON_REN.select(mcu.lang)
         # 错误帧检测
         mcu.SMOD0.select(mcu.lang)
+        # 管脚选择
+        mcu.S1_S.select(mcu.lang)

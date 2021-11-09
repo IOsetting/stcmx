@@ -33,3 +33,18 @@ class ConfigControl:
 
     def define_adc(self):
         pass
+
+    def define_pca(self):
+        pass
+
+    def define_pca0(self):
+        pass
+
+    def define_pca1(self):
+        pass
+
+    def define_pca2(self):
+        pass
+
+    def define_pca3(self):
+        pass

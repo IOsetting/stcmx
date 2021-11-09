@@ -18,6 +18,8 @@ class Stc8aDatabase(Stc8Config):
         self.name = "STC8A,STC8C,STC8F Series"
 
         # Basic SFR
+        self.P_SW1     = SFRModel('P_SW1',     0xA2, 0, 0x00, dict(en='Peripheral Port Switch: UART1,CCP/PWM,SPI', cn='外设端口切换控制寄存器1,串口1,CCP/PWM,SPI'))
+        self.P_SW2     = SFRModel('P_SW2',     0xBA, 0, 0x00, dict(en='Peripheral Port Switch Control: UART2/3/4,I2C,COMP', cn='外设端口切换控制寄存器2,串口2/3/4,I2C,比较器'))
         self.ADC_CONTR = SFRModel('ADC_CONTR', 0xBC, 0, 0x00, dict(en='ADC Control', cn='ADC控制寄存器'))
         self.ADC_RES   = SFRModel('ADC_RES',   0xBD, 0, 0x00, dict(en='ADC Result High Bits', cn='ADC结果高位寄存器'))
         self.ADC_RESL  = SFRModel('ADC_RESL',  0xBE, 0, 0x00, dict(en='ADC Result Low Bits', cn='ADC结果低位寄存器'))
@@ -79,6 +81,155 @@ class Stc8aDatabase(Stc8Config):
         )
 
         # SFR Bits
+
+        self.S1_S = SFRBitsModel(
+            self.P_SW1, 'S1_S', 6,
+            {
+                'en': "UART1 Port Select",
+                'cn': "串口1管脚选择",
+            },
+            len=2,
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {'en': 'RX:P3.0, TX:P3.1', 'cn': 'RX:P3.0, TX:P3.1'},
+                '1': {'en': 'RX:P3.6, TX:P3.7', 'cn': 'RX:P3.6, TX:P3.7'},
+                '2': {'en': 'RX:P1.6, TX:P1.7', 'cn': 'RX:P1.6, TX:P1.7'},
+                '3': {'en': 'RX:P4.3, TX:P4.4', 'cn': 'RX:P4.3, TX:P4.4'},
+            }
+        )
+        """串口1管脚选择"""
+
+        self.CCP_S = SFRBitsModel(
+            self.P_SW1, 'CCP_S', 4,
+            {
+                'en': "PCA/PWM Port Select",
+                'cn': "PCA/PWM管脚选择",
+            },
+            len=2,
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {
+                    'en': 'ECI:P1.2, CCP0:P1.7, CCP1:P1.6, CCP2:P1.5, CCP3:P1.4',
+                    'cn': 'ECI:P1.2, CCP0:P1.7, CCP1:P1.6, CCP2:P1.5, CCP3:P1.4'},
+                '1': {
+                    'en': 'ECI:P2.2, CCP0:P2.3, CCP1:P2.4, CCP2:P2.5, CCP3:P2.6',
+                    'cn': 'ECI:P2.2, CCP0:P2.3, CCP1:P2.4, CCP2:P2.5, CCP3:P2.6'},
+                '2': {
+                    'en': 'ECI:P7.4, CCP0:P7.0, CCP1:P7.1, CCP2:P7.2, CCP3:P7.3',
+                    'cn': 'ECI:P7.4, CCP0:P7.0, CCP1:P7.1, CCP2:P7.2, CCP3:P7.3'},
+                '3': {
+                    'en': 'ECI:P3.5, CCP0:P3.3, CCP1:P3.2, CCP2:P3.1, CCP3:P3.0',
+                    'cn': 'ECI:P3.5, CCP0:P3.3, CCP1:P3.2, CCP2:P3.1, CCP3:P3.0'},
+            }
+        )
+        """PCA/PWM管脚选择"""
+
+        self.SPI_S = SFRBitsModel(
+            self.P_SW1, 'SPI_S', 2,
+            {
+                'en': "SPI Port Select",
+                'cn': "SPI管脚选择",
+            },
+            len=2,
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {
+                    'en': 'SS:P1.2, MOSI:P1.3, MISO:P1.4, SCLK:P1.5',
+                    'cn': 'SS:P1.2, MOSI:P1.3, MISO:P1.4, SCLK:P1.5'},
+                '1': {
+                    'en': 'SS:P2.2, MOSI:P2.3, MISO:P2.4, SCLK:P2.5',
+                    'cn': 'SS:P2.2, MOSI:P2.3, MISO:P2.4, SCLK:P2.5'},
+                '2': {
+                    'en': 'SS:P7.4, MOSI:P7.5, MISO:P7.6, SCLK:P7.7',
+                    'cn': 'SS:P7.4, MOSI:P7.5, MISO:P7.6, SCLK:P7.7'},
+                '3': {
+                    'en': 'SS:P3.5, MOSI:P3.4, MISO:P3.3, SCLK:P3.2',
+                    'cn': 'SS:P3.5, MOSI:P3.4, MISO:P3.3, SCLK:P3.2'},
+            }
+        )
+        """SPI管脚选择"""
+
+        self.I2C_S = SFRBitsModel(
+            self.P_SW2, 'I2C_S', 4,
+            {
+                'en': "I2C Port Select",
+                'cn': "I2C管脚选择",
+            },
+            len=2,
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {
+                    'en': 'SCL:P1.5, SDA:P1.4',
+                    'cn': 'SCL:P1.5, SDA:P1.4'},
+                '1': {
+                    'en': 'SCL:P2.5, SDA:P2.4',
+                    'cn': 'SCL:P2.5, SDA:P2.4'},
+                '2': {
+                    'en': 'SCL:P7.7, SDA:P7.6',
+                    'cn': 'SCL:P7.7, SDA:P7.6'},
+                '3': {
+                    'en': 'SCL:P3.2, SDA:P3.3',
+                    'cn': 'SCL:P3.2, SDA:P3.3'},
+            }
+        )
+        """I2C管脚选择"""
+
+        self.CMPO_S = SFRBitsModel(
+            self.P_SW2, 'CMPO_S', 3,
+            {
+                'en': "COMP Output Port Select",
+                'cn': "比较器输出脚选择",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': { 'en': 'P3.4', 'cn': 'P3.4'},
+                '1': { 'en': 'P4.1', 'cn': 'P4.1'},
+            }
+        )
+        """比较器输出脚选择"""
+
+        self.S4_S = SFRBitsModel(
+            self.P_SW2, 'S4_S', 2,
+            {
+                'en': "UART4 Port Select",
+                'cn': "串口4管脚选择",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'RX:P0.2, TX:P0.3', 'cn': 'RX:P0.2, TX:P0.3'},
+                '1': {'en': 'RX:P5.2, TX:P5.3', 'cn': 'RX:P5.2, TX:P5.3'},
+            }
+        )
+        """串口4管脚选择"""
+
+        self.S3_S = SFRBitsModel(
+            self.P_SW2, 'S3_S', 1,
+            {
+                'en': "UART3 Port Select",
+                'cn': "串口3管脚选择",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'RX:P0.0, TX:P0.1', 'cn': 'RX:P0.0, TX:P0.1'},
+                '1': {'en': 'RX:P5.0, TX:P5.1', 'cn': 'RX:P5.0, TX:P5.1'},
+            }
+        )
+        """串口3管脚选择"""
+
+        self.S2_S = SFRBitsModel(
+            self.P_SW2, 'S2_S', 0,
+            {
+                'en': "UART2 Port Select",
+                'cn': "串口2管脚选择",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'RX:P1.0, TX:P1.1', 'cn': 'RX:P1.0, TX:P1.1'},
+                '1': {'en': 'RX:P4.0, TX:P4.2', 'cn': 'RX:P4.0, TX:P4.2'},
+            }
+        )
+        """串口2管脚选择"""
+
         self.ENIRC24M = SFRBitsModel(
             self.IRC24MCR, 'ENIRC24M', 7,
             {
@@ -732,10 +883,19 @@ class Stc8aDatabase(Stc8Config):
             len=2,
             values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
             options={
-                '0': {'en': '8-bit', 'cn': '8-bit'},
-                '1': {'en': '7-bit', 'cn': '7-bit'},
-                '2': {'en': '6-bit', 'cn': '6-bit'},
-                '3': {'en': '10-bit', 'cn': '10-bit'},
+                '0': {
+                    'en': '8-bit, reload:{EPC0H, CCAP0H[7:0]}, compare:{EPC0L, CCAP0L[7:0]}',
+                    'cn': '8-bit, 重载:{EPC0H, CCAP0H[7:0]}, 比较值:{EPC0L, CCAP0L[7:0]}'},
+                '1': {
+                    'en': '7-bit, reload:{EPC0H, CCAP0H[6:0]}, compare:{EPC0L, CCAP0L[6:0]}',
+                    'cn': '7-bit, 重载:{EPC0H, CCAP0H[6:0]}, 比较值:{EPC0L, CCAP0L[6:0]}'},
+                '2': {
+                    'en': '6-bit, reload:{EPC0H, CCAP0H[5:0]}, compare:{EPC0L, CCAP0L[5:0]}',
+                    'cn': '6-bit, 重载:{EPC0H, CCAP0H[5:0]}, 比较值:{EPC0L, CCAP0L[5:0]}'},
+                '3': {
+                    'en': '10-bit, reload:{EPC0H XCCAP0H[1:0] CCAP0H[7:0]}, compare:{EPC0L XCCAP0L[1:0] CCAP0L[7:0]}',
+                    'cn': '10-bit, 重载:{EPC0H, XCCAP0H[1:0], CCAP0H[7:0]}, 比较值:{EPC0L, XCCAP0L[1:0], CCAP0L[7:0]}'
+                },
             }
         )
         """PCA模块0 PWM位数控制"""
@@ -749,10 +909,19 @@ class Stc8aDatabase(Stc8Config):
             len=2,
             values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
             options={
-                '0': {'en': '8-bit', 'cn': '8-bit'},
-                '1': {'en': '7-bit', 'cn': '7-bit'},
-                '2': {'en': '6-bit', 'cn': '6-bit'},
-                '3': {'en': '10-bit', 'cn': '10-bit'},
+                '0': {
+                    'en': '8-bit, reload:{EPC1H, CCAP1H[7:0]}, compare:{EPC1L, CCAP1L[7:0]}',
+                    'cn': '8-bit, 重载:{EPC1H, CCAP1H[7:0]}, 比较值:{EPC1L, CCAP1L[7:0]}'},
+                '1': {
+                    'en': '7-bit, reload:{EPC1H, CCAP1H[6:0]}, compare:{EPC1L, CCAP1L[6:0]}',
+                    'cn': '7-bit, 重载:{EPC1H, CCAP1H[6:0]}, 比较值:{EPC1L, CCAP1L[6:0]}'},
+                '2': {
+                    'en': '6-bit, reload:{EPC1H, CCAP1H[5:0]}, compare:{EPC1L, CCAP1L[5:0]}',
+                    'cn': '6-bit, 重载:{EPC1H, CCAP1H[5:0]}, 比较值:{EPC1L, CCAP1L[5:0]}'},
+                '3': {
+                    'en': '10-bit, reload:{EPC1H XCCAP1H[1:0] CCAP1H[7:0]}, compare:{EPC1L XCCAP1L[1:0] CCAP1L[7:0]}',
+                    'cn': '10-bit, 重载:{EPC1H, XCCAP1H[1:0], CCAP1H[7:0]}, 比较值:{EPC1L, XCCAP1L[1:0], CCAP1L[7:0]}'
+                },
             }
         )
         """PCA模块1 PWM位数控制"""
@@ -766,10 +935,19 @@ class Stc8aDatabase(Stc8Config):
             len=2,
             values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
             options={
-                '0': {'en': '8-bit', 'cn': '8-bit'},
-                '1': {'en': '7-bit', 'cn': '7-bit'},
-                '2': {'en': '6-bit', 'cn': '6-bit'},
-                '3': {'en': '10-bit', 'cn': '10-bit'},
+                '0': {
+                    'en': '8-bit, reload:{EPC2H, CCAP2H[7:0]}, compare:{EPC2L, CCAP2L[7:0]}',
+                    'cn': '8-bit, 重载:{EPC2H, CCAP2H[7:0]}, 比较值:{EPC2L, CCAP2L[7:0]}'},
+                '1': {
+                    'en': '7-bit, reload:{EPC2H, CCAP2H[6:0]}, compare:{EPC2L, CCAP2L[6:0]}',
+                    'cn': '7-bit, 重载:{EPC2H, CCAP2H[6:0]}, 比较值:{EPC2L, CCAP2L[6:0]}'},
+                '2': {
+                    'en': '6-bit, reload:{EPC2H, CCAP2H[5:0]}, compare:{EPC2L, CCAP2L[5:0]}',
+                    'cn': '6-bit, 重载:{EPC2H, CCAP2H[5:0]}, 比较值:{EPC2L, CCAP0L[5:0]}'},
+                '3': {
+                    'en': '10-bit, reload:{EPC2H XCCAP2H[1:0] CCAP2H[7:0]}, compare:{EPC2L XCCAP2L[1:0] CCAP2L[7:0]}',
+                    'cn': '10-bit, 重载:{EPC2H, XCCAP2H[1:0], CCAP2H[7:0]}, 比较值:{EPC2L, XCCAP2L[1:0], CCAP2L[7:0]}'
+                },
             }
         )
         """PCA模块2 PWM位数控制"""
@@ -783,10 +961,19 @@ class Stc8aDatabase(Stc8Config):
             len=2,
             values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
             options={
-                '0': {'en': '8-bit', 'cn': '8-bit'},
-                '1': {'en': '7-bit', 'cn': '7-bit'},
-                '2': {'en': '6-bit', 'cn': '6-bit'},
-                '3': {'en': '10-bit', 'cn': '10-bit'},
+                '0': {
+                    'en': '8-bit, reload:{EPC3H, CCAP3H[7:0]}, compare:{EPC3L, CCAP3L[7:0]}',
+                    'cn': '8-bit, 重载:{EPC3H, CCAP3H[7:0]}, 比较值:{EPC3L, CCAP3L[7:0]}'},
+                '1': {
+                    'en': '7-bit, reload:{EPC3H, CCAP3H[6:0]}, compare:{EPC3L, CCAP3L[6:0]}',
+                    'cn': '7-bit, 重载:{EPC3H, CCAP3H[6:0]}, 比较值:{EPC3L, CCAP3L[6:0]}'},
+                '2': {
+                    'en': '6-bit, reload:{EPC3H, CCAP3H[5:0]}, compare:{EPC3L, CCAP3L[5:0]}',
+                    'cn': '6-bit, 重载:{EPC3H, CCAP3H[5:0]}, 比较值:{EPC3L, CCAP3L[5:0]}'},
+                '3': {
+                    'en': '10-bit, reload:{EPC3H XCCAP3H[1:0] CCAP3H[7:0]}, compare:{EPC3L XCCAP3L[1:0] CCAP3L[7:0]}',
+                    'cn': '10-bit, 重载:{EPC3H, XCCAP3H[1:0], CCAP3H[7:0]}, 比较值:{EPC3L, XCCAP3L[1:0], CCAP3L[7:0]}'
+                },
             }
         )
         """PCA模块3 PWM位数控制"""
