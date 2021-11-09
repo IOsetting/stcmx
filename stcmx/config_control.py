@@ -30,3 +30,6 @@ class ConfigControl:
 
     def define_timer2(self):
         pass
+
+    def define_adc(self):
+        pass

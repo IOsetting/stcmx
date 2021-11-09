@@ -3,6 +3,7 @@ from stcmx.config_control import ConfigControl
 from stcmx.stc8a.clock_config import ClockConfig
 from stcmx.stc8a.timer_config import TimerConfig
 from stcmx.stc8a.uart_config import UartConfig
+from stcmx.stc8a.adc_config import AdcConfig
 
 
 class Stc8aConfig(Stc8aDatabase, ConfigControl):
@@ -13,6 +14,7 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
         self.clock_config = ClockConfig(self)
         self.timer_config = TimerConfig(self)
         self.uart_config = UartConfig(self)
+        self.adc_config = AdcConfig(self)
 
         self.uart1: dict = {}
         # __init__ end
@@ -72,12 +74,25 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
             'cn': "==== 串口1配置结束 ====",
         })
 
+    def define_adc(self):
+        self.print({
+            'en': "==== ADC CONFIG START ====",
+            'cn': "==== ADC配置开始 ====",
+        })
+        self.adc_config.config()
+        self.print({
+            'en': "==== ADC CONFIG END ====",
+            'cn': "==== ADC配置结束 ====",
+        })
+
     def info(self):
         self.clock_config.info()
         print('')
         self.timer_config.info()
         print('')
         self.uart_config.info()
+        print('')
+        self.adc_config.info()
 
     def generate(self):
         print("Code for current configuration:\n MCU Type: %s\n" % self.name)
@@ -88,3 +103,5 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
         self.timer_config.generate()
         print('')
         self.uart_config.generate()
+        print('')
+        self.adc_config.generate()

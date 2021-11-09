@@ -58,6 +58,9 @@ class Cli(cmd.Cmd):
     def do_uart1(self, line):
         self.codegen.define_uart1()
 
+    def do_adc(self, line):
+        self.codegen.define_adc()
+
     def do_info(self, line):
         self.codegen.info()
 

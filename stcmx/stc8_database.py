@@ -46,8 +46,8 @@ class Stc8Database(object):
         self.SBUF    = SFRModel('SBUF',    0x99, 0, 0x00, dict(en='UART1 Data', cn='串口1数据寄存器'))
         self.S2CON   = SFRModel('S2CON',   0x9A, 0, 0x40, dict(en='UART2 Control', cn='串口2控制寄存器'))
         self.S2BUF   = SFRModel('S2BUF',   0x9B, 0, 0x00, dict(en='UART2 Data', cn='串口2数据寄存器'))
-        self.LIRTRIM = SFRModel('LIRTRIM', 0x9E, 0, 0x00, dict(en='Internal OSC Frequency Adjust', cn='IRC频率微调寄存器'))
-        self.IRTRIM  = SFRModel('IRTRIM',  0x9F, 0, 0x00, dict(en='Internal OSC Frequency Control', cn='IRC频率调整寄存器'))
+        self.LIRTRIM = SFRModel('LIRTRIM', 0x9E, 0, 0x00, dict(en='Internal OSC Frequency Adjust, May Be Predefined by ISP', cn='IRC频率微调寄存器, ISP可能写入预设值'))
+        self.IRTRIM  = SFRModel('IRTRIM',  0x9F, 0, 0x00, dict(en='Internal OSC Frequency Control, May Be Predefined by ISP', cn='IRC频率调整寄存器, ISP可能写入预设值'))
         self.IE      = SFRModel('IE',      0xA8, 0, 0x00, dict(en='Interrupt Enable', cn='中断允许寄存器'))
         self.SADDR   = SFRModel('SADDR',   0xA9, 0, 0x00, dict(en='UART1 Slave Address', cn='串口1从机地址寄存器'))
         self.WKTCL   = SFRModel('WKTCL',   0xAA, 0, 0x00, dict(en='Wakup Timer Low Byte', cn='掉电唤醒定时器低字节'))
@@ -83,7 +83,7 @@ class Stc8Database(object):
 
         # Extend RAM SFR
         self.CKSEL   = SFRModel('CKSEL',     0xFE00, 1, 0x00, dict(en='Clock Source Select', cn='时钟选择寄存器'))
-        self.CLKDIV  = SFRModel('CLKDIV',    0xFE01, 1, 0x00, dict(en='System Clock Division Select', cn='时钟分频寄存器'))
+        self.CLKDIV  = SFRModel('CLKDIV',    0xFE01, 1, 0x00, dict(en='System Clock Division Select, May Be Predefined by ISP', cn='时钟分频寄存器,ISP可能写入预设值'))
         self.XOSCCR  = SFRModel('XOSCCR',    0xFE03, 1, 0x00, dict(en='External OSC Control', cn='外部晶振控制寄存器'))
         self.IRC32KCR = SFRModel('IRC32KCR', 0xFE04, 1, 0x00, dict(en='Internal Low Frequency OSC Control', cn='内部32K振荡器控制寄存器'))
 
