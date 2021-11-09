@@ -23,6 +23,28 @@ class Stc8aDatabase(Stc8Config):
         self.ADC_RESL  = SFRModel('ADC_RESL',  0xBE, 0, 0x00, dict(en='ADC Result Low Bits', cn='ADC结果低位寄存器'))
         self.ADCCFG    = SFRModel('ADCCFG',    0xDE, 0, 0x00, dict(en='ADC Config', cn='ADC配置寄存器'))
 
+        self.CCON      = SFRModel('CCON',      0xD8, 0, 0x00, dict(en='PCA Control', cn='PCA控制寄存器'))
+        self.CMOD      = SFRModel('CMOD',      0xD9, 0, 0x00, dict(en='PCA Mode', cn='PCA模式寄存器'))
+        self.CCAPM0    = SFRModel('CCAPM0',    0xDA, 0, 0x00, dict(en='PCA Module0 Mode Control', cn='PCA模块0模式控制寄存器'))
+        self.CCAPM1    = SFRModel('CCAPM1',    0xDB, 0, 0x00, dict(en='PCA Module1 Mode Control', cn='PCA模块1模式控制寄存器'))
+        self.CCAPM2    = SFRModel('CCAPM2',    0xDC, 0, 0x00, dict(en='PCA Module2 Mode Control', cn='PCA模块2模式控制寄存器'))
+        self.CCAPM3    = SFRModel('CCAPM3',    0xDD, 0, 0x00, dict(en='PCA Module3 Mode Control', cn='PCA模块3模式控制寄存器'))
+        self.CL        = SFRModel('CL',        0xE9, 0, 0x00, dict(en='PCA Counter Low Byte', cn='PCA计数器低字节'))
+        self.CH        = SFRModel('CH',        0xF9, 0, 0x00, dict(en='PCA Counter High Byte', cn='PCA计数器高字节'))
+        self.CCAP0L    = SFRModel('CCAP0L',    0xEA, 0, 0x00, dict(en='PCA Module0 Low Byte', cn='PCA模块0低字节'))
+        self.CCAP1L    = SFRModel('CCAP1L',    0xEB, 0, 0x00, dict(en='PCA Module1 Low Byte', cn='PCA模块1低字节'))
+        self.CCAP2L    = SFRModel('CCAP2L',    0xEC, 0, 0x00, dict(en='PCA Module2 Low Byte', cn='PCA模块2低字节'))
+        self.CCAP3L    = SFRModel('CCAP3L',    0xED, 0, 0x00, dict(en='PCA Module3 Low Byte', cn='PCA模块3低字节'))
+        self.PCA_PWM0  = SFRModel('PCA_PWM0',  0xF2, 0, 0x00, dict(en='PCA Module0 PWM Mode Control', cn='PCA模块0 PWM模式寄存器'))
+        self.PCA_PWM1  = SFRModel('PCA_PWM1',  0xF3, 0, 0x00, dict(en='PCA Module1 PWM Mode Control', cn='PCA模块1 PWM模式寄存器'))
+        self.PCA_PWM2  = SFRModel('PCA_PWM2',  0xF4, 0, 0x00, dict(en='PCA Module2 PWM Mode Control', cn='PCA模块2 PWM模式寄存器'))
+        self.PCA_PWM3  = SFRModel('PCA_PWM3',  0xF5, 0, 0x00, dict(en='PCA Module3 PWM Mode Control', cn='PCA模块3 PWM模式寄存器'))
+        self.CCAP0H    = SFRModel('CCAP0H',    0xFA, 0, 0x00, dict(en='PCA Module0 High Byte', cn='PCA模块0高字节'))
+        self.CCAP1H    = SFRModel('CCAP1H',    0xFB, 0, 0x00, dict(en='PCA Module1 High Byte', cn='PCA模块1高字节'))
+        self.CCAP2H    = SFRModel('CCAP2H',    0xFC, 0, 0x00, dict(en='PCA Module2 High Byte', cn='PCA模块2高字节'))
+        self.CCAP3H    = SFRModel('CCAP3H',    0xFD, 0, 0x00, dict(en='PCA Module3 High Byte', cn='PCA模块3高字节'))
+
+
         # Extend RAM SFR
         self.IRC24MCR = SFRModel('IRC24MCR', 0xFE02, 1, 0x80, dict(en='Internal High Speed OSC Control', cn='内部24M振荡器控制寄存器'))
         self.ADCTIM = SFRModel('ADCTIM', 0xFEA8, 1, 0x80, dict(en='ADC Time Sequence Control', cn='ADC时序控制寄存器'))
@@ -202,6 +224,7 @@ class Stc8aDatabase(Stc8Config):
                 'en': "ADC Clock Prescaler",
                 'cn': "ADC时钟预分频",
             },
+            len=4,
             values={
                 '0': 0B0000,
                 '1': 0B0001,
@@ -241,5 +264,532 @@ class Stc8aDatabase(Stc8Config):
             }
         )
         """ADC时钟预分频"""
+
+        self.CR = SFRBitsModel(
+            self.CCON, "CR", 6,
+            {
+                'en': "PCA Run Control",
+                'cn': "PCA运行控制",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Stop', 'cn': '停止'},
+                '1': {'en': 'Run', 'cn': '运行'},
+            }
+        )
+        """PCA运行控制"""
+
+        self.CIDL = SFRBitsModel(
+            self.CMOD, "CIDL", 7,
+            {
+                'en': "PCA Stop Counting When Idel",
+                'cn': "PCA 空闲时停止计数",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Count', 'cn': '计数'},
+                '1': {'en': 'Stop Counting', 'cn': '停止计数'},
+            }
+        )
+        """PCA运行控制"""
+
+        self.CPS = SFRBitsModel(
+            self.CMOD, "CPS", 1,
+            {
+                'en': "PCA Clock Source",
+                'cn': "PCA计数时钟源/脉冲源",
+            },
+            len=3,
+            values={
+                '0': 0B000, '1': 0B001, '2': 0B010, '3': 0B011,
+                '4': 0B100, '5': 0B101, '6': 0B110, '7': 0B111
+            },
+            options={
+                '0': {'en': 'SYSCLK/12', 'cn': 'SYSCLK/12'},
+                '1': {'en': 'SYSCLK/2', 'cn': 'SYSCLK/2'},
+                '2': {'en': 'Timer0 Overflow', 'cn': '定时器1溢出脉冲'},
+                '3': {'en': 'ECI Pin External Clock', 'cn': 'ECI脚外部时钟'},
+                '4': {'en': 'SYSCLK', 'cn': 'SYSCLK'},
+                '5': {'en': 'SYSCLK/4', 'cn': 'SYSCLK/4'},
+                '6': {'en': 'SYSCLK/6', 'cn': 'SYSCLK/6'},
+                '7': {'en': 'SYSCLK/8', 'cn': 'SYSCLK/8'},
+            }
+        )
+        """PCA计数时钟源选择"""
+
+        self.ECF = SFRBitsModel(
+            self.CMOD, "ECF", 0,
+            {
+                'en': "PCA Counter Overflow Interrupt",
+                'cn': "PCA计数溢出中断",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """PCA计数溢出中断"""
+
+        self.ECOM0 = SFRBitsModel(
+            self.CCAPM0, "ECOM0", 6,
+            {
+                'en': "PCA Module0 Comparison",
+                'cn': "PCA模块0比较功能",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块0比较功能"""
+
+        self.ECOM1 = SFRBitsModel(
+            self.CCAPM1, "ECOM1", 6,
+            {
+                'en': "PCA Module1 Comparison",
+                'cn': "PCA模块1比较功能",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块1比较功能"""
+
+        self.ECOM2 = SFRBitsModel(
+            self.CCAPM2, "ECOM2", 6,
+            {
+                'en': "PCA Module2 Comparison",
+                'cn': "PCA模块2比较功能",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块2比较功能"""
+
+        self.ECOM3 = SFRBitsModel(
+            self.CCAPM3, "ECOM3", 6,
+            {
+                'en': "PCA Module3 Comparison",
+                'cn': "PCA模块3比较功能",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块3比较功能"""
+
+        self.CCAPP0 = SFRBitsModel(
+            self.CCAPM0, "CCAPP0", 5,
+            {
+                'en': "PCA Module0 Rising Capture",
+                'cn': "PCA模块0上升沿捕获",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块0上升沿捕获"""
+
+        self.CCAPP1 = SFRBitsModel(
+            self.CCAPM1, "CCAPP1", 5,
+            {
+                'en': "PCA Module1 Rising Capture",
+                'cn': "PCA模块1上升沿捕获",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块1上升沿捕获"""
+
+        self.CCAPP2 = SFRBitsModel(
+            self.CCAPM2, "CCAPP2", 5,
+            {
+                'en': "PCA Module2 Rising Capture",
+                'cn': "PCA模块2上升沿捕获",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块2上升沿捕获"""
+
+        self.CCAPP3 = SFRBitsModel(
+            self.CCAPM3, "CCAPP3", 5,
+            {
+                'en': "PCA Module3 Rising Capture",
+                'cn': "PCA模块3上升沿捕获",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块3上升沿捕获"""
+
+        self.CCAPN0 = SFRBitsModel(
+            self.CCAPM0, "CCAPN0", 4,
+            {
+                'en': "PCA Module0 Falling Capture",
+                'cn': "PCA模块0下降沿捕获",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块0下降沿捕获"""
+
+        self.CCAPN1 = SFRBitsModel(
+            self.CCAPM1, "CCAPN1", 4,
+            {
+                'en': "PCA Module1 Falling Capture",
+                'cn': "PCA模块1下降沿捕获",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块1下降沿捕获"""
+
+        self.CCAPN2 = SFRBitsModel(
+            self.CCAPM2, "CCAPN2", 4,
+            {
+                'en': "PCA Module2 Falling Capture",
+                'cn': "PCA模块2下降沿捕获",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块2下降沿捕获"""
+
+        self.CCAPN3 = SFRBitsModel(
+            self.CCAPM3, "CCAPN3", 4,
+            {
+                'en': "PCA Module3 Falling Capture",
+                'cn': "PCA模块3下降沿捕获",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块3下降沿捕获"""
+
+        self.MAT0 = SFRBitsModel(
+            self.CCAPM0, "MAT0", 3,
+            {
+                'en': "PCA Module0 Match",
+                'cn': "PCA模块0匹配功能",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块0匹配功能"""
+
+        self.MAT1 = SFRBitsModel(
+            self.CCAPM1, "MAT1", 3,
+            {
+                'en': "PCA Module1 Match",
+                'cn': "PCA模块1匹配功能",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块1匹配功能"""
+
+        self.MAT2 = SFRBitsModel(
+            self.CCAPM2, "MAT2", 3,
+            {
+                'en': "PCA Module2 Match",
+                'cn': "PCA模块2匹配功能",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块2匹配功能"""
+
+        self.MAT3 = SFRBitsModel(
+            self.CCAPM3, "MAT3", 3,
+            {
+                'en': "PCA Module3 Match",
+                'cn': "PCA模块3匹配功能",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块3匹配功能"""
+
+        self.TOG0 = SFRBitsModel(
+            self.CCAPM0, "TOG0", 2,
+            {
+                'en': "PCA Module0 Pulse Output",
+                'cn': "PCA模块0脉冲输出",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块0脉冲输出"""
+
+        self.TOG1 = SFRBitsModel(
+            self.CCAPM1, "TOG1", 2,
+            {
+                'en': "PCA Module1 Pulse Output",
+                'cn': "PCA模块1脉冲输出",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块1脉冲输出"""
+
+        self.TOG2 = SFRBitsModel(
+            self.CCAPM2, "TOG2", 2,
+            {
+                'en': "PCA Module2 Pulse Output",
+                'cn': "PCA模块2脉冲输出",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块2脉冲输出"""
+
+        self.TOG3 = SFRBitsModel(
+            self.CCAPM3, "TOG3", 2,
+            {
+                'en': "PCA Module3 Pulse Output",
+                'cn': "PCA模块3脉冲输出",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块3脉冲输出"""
+
+        self.PWM0 = SFRBitsModel(
+            self.CCAPM0, "PWM0", 1,
+            {
+                'en': "PCA Module0 PWM Output",
+                'cn': "PCA模块0 PWM输出",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块0 PWM输出"""
+
+        self.PWM1 = SFRBitsModel(
+            self.CCAPM1, "PWM1", 1,
+            {
+                'en': "PCA Module1 PWM Output",
+                'cn': "PCA模块1 PWM输出",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块1 PWM输出"""
+
+        self.PWM2 = SFRBitsModel(
+            self.CCAPM2, "PWM2", 1,
+            {
+                'en': "PCA Module2 PWM Output",
+                'cn': "PCA模块2 PWM输出",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块2 PWM输出"""
+
+        self.PWM3 = SFRBitsModel(
+            self.CCAPM3, "PWM3", 1,
+            {
+                'en': "PCA Module3 PWM Output",
+                'cn': "PCA模块3 PWM输出",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'OFF', 'cn': '关闭'},
+                '1': {'en': 'ON', 'cn': '开启'},
+            }
+        )
+        """PCA模块3 PWM输出"""
+
+        self.ECCF0 = SFRBitsModel(
+            self.CCAPM0, "ECCF0", 0,
+            {
+                'en': "PCA Module0 Match/Capture Interrupt",
+                'cn': "PCA模块0 匹配捕获中断",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """PCA模块0 匹配捕获中断"""
+
+        self.ECCF1 = SFRBitsModel(
+            self.CCAPM1, "ECCF1", 0,
+            {
+                'en': "PCA Module1 Match/Capture Interrupt",
+                'cn': "PCA模块1 匹配捕获中断",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """PCA模块1 匹配捕获中断"""
+
+        self.ECCF2 = SFRBitsModel(
+            self.CCAPM2, "ECCF2", 0,
+            {
+                'en': "PCA Module2 Match/Capture Interrupt",
+                'cn': "PCA模块2 匹配捕获中断",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """PCA模块2 匹配捕获中断"""
+
+        self.ECCF3 = SFRBitsModel(
+            self.CCAPM3, "ECCF3", 0,
+            {
+                'en': "PCA Module3 Match/Capture Interrupt",
+                'cn': "PCA模块3 匹配捕获中断",
+            },
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """PCA模块3 匹配捕获中断"""
+
+        self.EBS0 = SFRBitsModel(
+            self.PCA_PWM0, "EBS0", 6,
+            {
+                'en': "PCA Module0 PWM Bits Width Control",
+                'cn': "PCA模块0 PWM位数控制",
+            },
+            len=2,
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {'en': '8-bit', 'cn': '8-bit'},
+                '1': {'en': '7-bit', 'cn': '7-bit'},
+                '2': {'en': '6-bit', 'cn': '6-bit'},
+                '3': {'en': '10-bit', 'cn': '10-bit'},
+            }
+        )
+        """PCA模块0 PWM位数控制"""
+
+        self.EBS1 = SFRBitsModel(
+            self.PCA_PWM1, "EBS1", 6,
+            {
+                'en': "PCA Module1 PWM Bits Width Control",
+                'cn': "PCA模块1 PWM位数控制",
+            },
+            len=2,
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {'en': '8-bit', 'cn': '8-bit'},
+                '1': {'en': '7-bit', 'cn': '7-bit'},
+                '2': {'en': '6-bit', 'cn': '6-bit'},
+                '3': {'en': '10-bit', 'cn': '10-bit'},
+            }
+        )
+        """PCA模块1 PWM位数控制"""
+
+        self.EBS2 = SFRBitsModel(
+            self.PCA_PWM2, "EBS2", 6,
+            {
+                'en': "PCA Module2 PWM Bits Width Control",
+                'cn': "PCA模块2 PWM位数控制",
+            },
+            len=2,
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {'en': '8-bit', 'cn': '8-bit'},
+                '1': {'en': '7-bit', 'cn': '7-bit'},
+                '2': {'en': '6-bit', 'cn': '6-bit'},
+                '3': {'en': '10-bit', 'cn': '10-bit'},
+            }
+        )
+        """PCA模块2 PWM位数控制"""
+
+        self.EBS3 = SFRBitsModel(
+            self.PCA_PWM3, "EBS3", 6,
+            {
+                'en': "PCA Module3 PWM Bits Width Control",
+                'cn': "PCA模块3 PWM位数控制",
+            },
+            len=2,
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {'en': '8-bit', 'cn': '8-bit'},
+                '1': {'en': '7-bit', 'cn': '7-bit'},
+                '2': {'en': '6-bit', 'cn': '6-bit'},
+                '3': {'en': '10-bit', 'cn': '10-bit'},
+            }
+        )
+        """PCA模块3 PWM位数控制"""
+
 
         # __init__ end
