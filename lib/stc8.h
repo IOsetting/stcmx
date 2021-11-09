@@ -440,6 +440,11 @@ SFR(PWMCR,              0xFE);
 #define  ECBI               0x40
 SFR(RSTCFG,             0xFF);
 
+#define T24M          (*(unsigned  char idata *)0xFB)
+#define T22M1184      (*(unsigned  char idata *)0xFA)
+#define F32K          (*(unsigned short idata *)0xF8)
+#define UUID_ADDR       (unsigned  char idata *)0xF1
+#define BANDGAP       (*(unsigned short idata *)0xEF)
 
 //如下特殊功能寄存器位于扩展RAM区域
 //访问这些寄存器,需先将P_SW2的BIT7设置为1,才可正常读写

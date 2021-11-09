@@ -4,12 +4,12 @@ import stcmx.util as util
 
 
 if TYPE_CHECKING:
-    from stcmx.stc8d_config import Stc8dConfig
+    from stcmx.stc8a_config import Stc8aConfig
 
 
 class UartConfig:
 
-    def __init__(self, base: Stc8dConfig):
+    def __init__(self, base: Stc8aConfig):
         self.base = base
 
     def info(self):
@@ -42,9 +42,8 @@ class UartConfig:
                 baudRate = mcu.timer_config.timer0and1_freq_calculate(mode_1t == 0B1, t1mode == 0B10, thl, True, uart_rate_double)
             else:  # 定时器2
                 mode_1t = mcu.T2x12.get_value()
-                tm2ps = mcu.TM2PS_V.get_value()
                 thl = (mcu.T2H.val << 8) + mcu.T2L.val
-                baudRate = mcu.timer_config.timer2_freq_calculate(mode_1t == 0B1, tm2ps, thl, True)
+                baudRate = mcu.timer_config.timer2_freq_calculate(mode_1t == 0B1, thl, True)
             print("UART1 Baud Rate: %d" % baudRate)
 
         # 模式2
@@ -71,13 +70,11 @@ class UartConfig:
                     thl = mcu.TH1.val
                 else:
                     thl = (mcu.TH1.val << 8) + mcu.TL1.val
-                baudRate = mcu.timer_config\
-                    .timer0and1_freq_calculate(mode_1t == 0B1, t1mode == 0B10, thl, True, uart_rate_double)
+                baudRate = mcu.timer_config.timer0and1_freq_calculate(mode_1t == 0B1, t1mode == 0B10, thl, True, uart_rate_double)
             else:  # 定时器2
                 mode_1t = mcu.T2x12.get_value()
-                tm2ps = mcu.TM2PS_V.get_value()
                 thl = (mcu.T2H.val << 8) + mcu.T2L.val
-                baudRate = mcu.timer_config.timer2_freq_calculate(mode_1t == 0B1, tm2ps, thl, True)
+                baudRate = mcu.timer_config.timer2_freq_calculate(mode_1t == 0B1, thl, True)
             print("UART1 Baud Rate: %d" % baudRate)
 
         # 启用接收

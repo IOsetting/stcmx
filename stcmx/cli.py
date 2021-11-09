@@ -12,7 +12,7 @@ class Cli(cmd.Cmd):
     def __init__(self):
         super().__init__()
 
-        lvds = {'stc8a': 0, 'stc8d': 1}
+        lvds = {'stc8a': 'stc8a', 'stc8d': 'stc8d'}
         while True:
             arg = input("Please choose a MCU type(请选择MCU类型) %s\n:" % list(lvds.keys()))
             if len(arg) > 0:

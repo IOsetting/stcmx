@@ -14,9 +14,7 @@ class Stc8dConfig(Stc8dDatabase, ConfigControl):
         self.timer_config = TimerConfig(self)
         self.uart_config = UartConfig(self)
 
-        self.uart1: dict = {
-            'enabled': False,
-        }
+        self.uart1: dict = {}
         # __init__ end
 
     def define_clock(self):
