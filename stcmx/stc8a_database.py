@@ -46,7 +46,6 @@ class Stc8aDatabase(Stc8Config):
         self.CCAP2H    = SFRModel('CCAP2H',    0xFC, 0, 0x00, dict(en='PCA Module2 High Byte', cn='PCA模块2高字节'))
         self.CCAP3H    = SFRModel('CCAP3H',    0xFD, 0, 0x00, dict(en='PCA Module3 High Byte', cn='PCA模块3高字节'))
 
-
         # Extend RAM SFR
         self.IRC24MCR = SFRModel('IRC24MCR', 0xFE02, 1, 0x80, dict(en='Internal High Speed OSC Control', cn='内部24M振荡器控制寄存器'))
         self.ADCTIM = SFRModel('ADCTIM', 0xFEA8, 1, 0x80, dict(en='ADC Time Sequence Control', cn='ADC时序控制寄存器'))
@@ -79,6 +78,54 @@ class Stc8aDatabase(Stc8Config):
                 '1': ['T24M', 24000000],
             }
         )
+
+        self.MX_PWM0_DUTY_CYCLE = ValueModel(
+            'MX_PWM0_DUTY_CYCLE',
+            50.0,
+            {
+                'en': "PCA Module0 PWM Duty Cycle, Value Between [0.0, 100.0]",
+                'cn': "PCA模块0 PWM 占空比, 取值[0.0, 100.0]",
+            },
+            type='float',
+            valid=lambda a: 0.0 <= a <= 100.0,
+        )
+        """PCA模块0 PWM占空比"""
+
+        self.MX_PWM1_DUTY_CYCLE = ValueModel(
+            'MX_PWM1_DUTY_CYCLE',
+            50.0,
+            {
+                'en': "PCA Module1 PWM Duty Cycle, Value Between [0.0, 100.0]",
+                'cn': "PCA模块1 PWM 占空比, 取值[0.0, 100.0]",
+            },
+            type='float',
+            valid=lambda a: 0.0 <= a <= 100.0,
+        )
+        """PCA模块1 PWM占空比"""
+
+        self.MX_PWM2_DUTY_CYCLE = ValueModel(
+            'MX_PWM2_DUTY_CYCLE',
+            50.0,
+            {
+                'en': "PCA Module2 PWM Duty Cycle, Value Between [0.0, 100.0]",
+                'cn': "PCA模块2 PWM 占空比, 取值[0.0, 100.0]",
+            },
+            type='float',
+            valid=lambda a: 0.0 <= a <= 100.0,
+        )
+        """PCA模块2 PWM占空比"""
+
+        self.MX_PWM3_DUTY_CYCLE = ValueModel(
+            'MX_PWM3_DUTY_CYCLE',
+            50.0,
+            {
+                'en': "PCA Module3 PWM Duty Cycle, Value Between [0.0, 100.0]",
+                'cn': "PCA模块3 PWM 占空比, 取值[0.0, 100.0]",
+            },
+            type='float',
+            valid=lambda a: 0.0 <= a <= 100.0,
+        )
+        """PCA模块3 PWM占空比"""
 
         # SFR Bits
 
@@ -426,7 +473,8 @@ class Stc8aDatabase(Stc8Config):
             options={
                 '0': {'en': 'Stop', 'cn': '停止'},
                 '1': {'en': 'Run', 'cn': '运行'},
-            }
+            },
+            sbit=True
         )
         """PCA运行控制"""
 
@@ -977,6 +1025,166 @@ class Stc8aDatabase(Stc8Config):
             }
         )
         """PCA模块3 PWM位数控制"""
+
+        self.CCAP0LV = SFRBitsModel(
+            self.CCAP0L, 'CCAP0LV', 0,
+            {
+                'en': 'PCA Module0 Comparison Value',
+                'cn': 'PCA模块0 比较值'
+            },
+            len=8
+        )
+        """PCA模块0 比较值"""
+
+        self.CCAP1LV = SFRBitsModel(
+            self.CCAP1L, 'CCAP1LV', 0,
+            {
+                'en': 'PCA Module1 Comparison Value',
+                'cn': 'PCA模块1 比较值'
+            },
+            len=8
+        )
+        """PCA模块1 比较值"""
+
+        self.CCAP2LV = SFRBitsModel(
+            self.CCAP2L, 'CCAP2LV', 0,
+            {
+                'en': 'PCA Module2 Comparison Value',
+                'cn': 'PCA模块2 比较值'
+            },
+            len=8
+        )
+        """PCA模块2 比较值"""
+
+        self.CCAP3LV = SFRBitsModel(
+            self.CCAP3L, 'CCAP3LV', 0,
+            {
+                'en': 'PCA Module3 Comparison Value',
+                'cn': 'PCA模块3 比较值'
+            },
+            len=8
+        )
+        """PCA模块3 比较值"""
+
+        self.CCAP0HV = SFRBitsModel(
+            self.CCAP0H, 'CCAP0HV', 0,
+            {
+                'en': 'PCA Module0 Reload Value',
+                'cn': 'PCA模块0 重载值'
+            },
+            len=8
+        )
+        """PCA模块0 重载值"""
+
+        self.CCAP1HV = SFRBitsModel(
+            self.CCAP1H, 'CCAP1HV', 0,
+            {
+                'en': 'PCA Module1 Reload Value',
+                'cn': 'PCA模块1 重载值'
+            },
+            len=8
+        )
+        """PCA模块1 重载值"""
+
+        self.CCAP2HV = SFRBitsModel(
+            self.CCAP2H, 'CCAP2HV', 0,
+            {
+                'en': 'PCA Module2 Reload Value',
+                'cn': 'PCA模块2 重载值'
+            },
+            len=8
+        )
+        """PCA模块2 重载值"""
+
+        self.CCAP3HV = SFRBitsModel(
+            self.CCAP3H, 'CCAP3HV', 0,
+            {
+                'en': 'PCA Module3 Reload Value',
+                'cn': 'PCA模块3 重载值'
+            },
+            len=8
+        )
+        """PCA模块3 重载值"""
+
+        self.XCCAP0L = SFRBitsModel(
+            self.PCA_PWM0, 'XCCAP0L', 2,
+            {
+                'en': 'PCA Module0 10-bit PWM, 9th and 10th bit of Comparison Value',
+                'cn': 'PCA模块0 10位PWM的第9第10位的比较值'
+            },
+            len=2
+        )
+        """PCA模块0 10位PWM的第9第10位的比较值"""
+
+        self.XCCAP1L = SFRBitsModel(
+            self.PCA_PWM1, 'XCCAP1L', 2,
+            {
+                'en': 'PCA Module1 10-bit PWM, 9th and 10th bit of Comparison Value',
+                'cn': 'PCA模块1 10位PWM的第9第10位的比较值'
+            },
+            len=2
+        )
+        """PCA模块1 10位PWM的第9第10位的比较值"""
+
+        self.XCCAP2L = SFRBitsModel(
+            self.PCA_PWM2, 'XCCAP2L', 2,
+            {
+                'en': 'PCA Module2 10-bit PWM, 9th and 10th bit of Comparison Value',
+                'cn': 'PCA模块2 10位PWM的第9第10位的比较值'
+            },
+            len=2
+        )
+        """PCA模块2 10位PWM的第9第10位的比较值"""
+
+        self.XCCAP3L = SFRBitsModel(
+            self.PCA_PWM3, 'XCCAP3L', 2,
+            {
+                'en': 'PCA Module3 10-bit PWM, 9th and 10th bit of Comparison Value',
+                'cn': 'PCA模块3 10位PWM的第9第10位的比较值'
+            },
+            len=2
+        )
+        """PCA模块3 10位PWM的第9第10位的比较值"""
+
+        self.XCCAP0H = SFRBitsModel(
+            self.PCA_PWM0, 'XCCAP0H', 4,
+            {
+                'en': 'PCA Module0 10-bit PWM, 9th and 10th bit of Reload Value',
+                'cn': 'PCA模块0 10位PWM的第9第10位的重载值'
+            },
+            len=2
+        )
+        """PCA模块0 10位PWM的第9第10位的重载值"""
+
+        self.XCCAP1H = SFRBitsModel(
+            self.PCA_PWM1, 'XCCAP1H', 4,
+            {
+                'en': 'PCA Module1 10-bit PWM, 9th and 10th bit of Reload Value',
+                'cn': 'PCA模块1 10位PWM的第9第10位的重载值'
+            },
+            len=2
+        )
+        """PCA模块1 10位PWM的第9第10位的重载值"""
+
+        self.XCCAP2H = SFRBitsModel(
+            self.PCA_PWM2, 'XCCAP2H', 4,
+            {
+                'en': 'PCA Module2 10-bit PWM, 9th and 10th bit of Reload Value',
+                'cn': 'PCA模块2 10位PWM的第9第10位的重载值'
+            },
+            len=2
+        )
+        """PCA模块2 10位PWM的第9第10位的重载值"""
+
+        self.XCCAP3H = SFRBitsModel(
+            self.PCA_PWM3, 'XCCAP3H', 4,
+            {
+                'en': 'PCA Module3 10-bit PWM, 9th and 10th bit of Reload Value',
+                'cn': 'PCA模块3 10位PWM的第9第10位的重载值'
+            },
+            len=2
+        )
+        """PCA模块3 10位PWM的第9第10位的重载值"""
 
 
         # __init__ end
