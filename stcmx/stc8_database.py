@@ -262,7 +262,7 @@ class Stc8Database(object):
             self.AUXR, 'T0x12', 7,
             {
                 'en': "Timer0 1T or 12T Mode",
-                'cn': "定时器0 1T模式/12T模式)",
+                'cn': "定时器0 1T模式/12T模式",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -276,7 +276,7 @@ class Stc8Database(object):
             self.AUXR, 'T1x12', 6,
             {
                 'en': "Timer1 1T or 12T Mode",
-                'cn': "定时器1 1T模式/12T模式)",
+                'cn': "定时器1 1T模式/12T模式",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -290,7 +290,7 @@ class Stc8Database(object):
             self.AUXR, 'T2x12', 2,
             {
                 'en': "Timer2 1T or 12T Mode",
-                'cn': "定时器2 1T模式/12T模式)",
+                'cn': "定时器2 1T模式/12T模式",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -345,7 +345,7 @@ class Stc8Database(object):
         self.T0CLKO = SFRBitsModel(
             self.INTCLKO, 'T0CLKO', 0,
             {
-                'en': "Timer0 Clock Ouput",
+                'en': "Timer0 Clock Output",
                 'cn': "定时器0时钟输出",
             },
             values={'0': 0B0, '1': 0B1},
@@ -359,7 +359,7 @@ class Stc8Database(object):
         self.T1CLKO = SFRBitsModel(
             self.INTCLKO, 'T1CLKO', 1,
             {
-                'en': "Timer1 Clock Ouput",
+                'en': "Timer1 Clock Output",
                 'cn': "定时器1时钟输出",
             },
             values={'0': 0B0, '1': 0B1},
@@ -373,7 +373,7 @@ class Stc8Database(object):
         self.T2CLKO = SFRBitsModel(
             self.INTCLKO, 'T2CLKO', 2,
             {
-                'en': "Timer2 Clock Ouput",
+                'en': "Timer2 Clock Output",
                 'cn': "定时器2时钟输出",
             },
             values={'0': 0B0, '1': 0B1},
@@ -387,7 +387,7 @@ class Stc8Database(object):
         self.T0_GATE = SFRBitsModel(
             self.TMOD, 'T0_GATE', 3,
             {
-                'en': "Timer0 work mode",
+                'en': "Timer0 Work Mode",
                 'cn': "定时器0打开条件",
             },
             values={'0': 0B0, '1': 0B1},

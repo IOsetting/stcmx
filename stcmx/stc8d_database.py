@@ -129,7 +129,7 @@ class Stc8dDatabase(Stc8Config):
         self.MCLKOCRDIV = SFRBitsModel(
             self.MCLKOCR, 'MCLKOCRDIV', 0,
             {
-                'en': "Clock output division, value in range [0, 127], 0 means no output, for other values, output = SYSCLK/division",
+                'en': "Clock output division, value range [0, 127], 0:no output, other values:SYSCLK/division",
                 'cn': "时钟输出的分频系数, 取值范围[0, 127], 0表示不输出, 其他值, 则输出频率为SYSCLK/分频系数",
             },
             len=7,

@@ -22,39 +22,23 @@ class TimerConfig:
         print(mcu.T0_GATE.get_info(mcu.lang))
         print(mcu.T0_MODE.get_info(mcu.lang))
         print(mcu.T0CLKO.get_info(mcu.lang))
-        if mcu.T0_MODE.get_value() == 0B10:
-            thl = mcu.TH0.val
-        else:
-            thl = (mcu.TH0.val << 8) + mcu.TL0.val
-        print("TIMER0 Freq: %d" % self.timer0and1_freq_calculate(
-            mcu.T0x12.get_value() == 0B1,
-            mcu.T0_MODE.get_value() == 0B10,
-            thl
-        ))
+        print("TIMER0 Freq: %d" % self.get_timer0_freq())
         print('')
         # timer1
         print(mcu.TR1.get_info(mcu.lang))
         print(mcu.T1x12.get_info(mcu.lang))
-        mode_1t = mcu.T1x12.get_value()
         print(mcu.T1_CT.get_info(mcu.lang))
         print(mcu.T1_GATE.get_info(mcu.lang))
         print(mcu.T1CLKO.get_info(mcu.lang))
         print(mcu.T1_MODE.get_info(mcu.lang))
-        t1mode = mcu.T1_MODE.get_value()
-        if t1mode == 0B10: #mode_2
-            thl = mcu.TH1.val
-        else:
-            thl = (mcu.TH1.val << 8) + mcu.TL1.val
-        print("TIMER1 Freq: %d" % self.timer0and1_freq_calculate(mode_1t == 0B1, t1mode == 0B10, thl))
+        print("TIMER1 Freq: %d" % self.get_timer1_freq())
         print('')
         # timer2
         print(mcu.T2R.get_info(mcu.lang))
         print(mcu.T2x12.get_info(mcu.lang))
-        mode_1t = mcu.T2x12.get_value()
         print(mcu.T2_CT.get_info(mcu.lang))
         print(mcu.T2CLKO.get_info(mcu.lang))
-        thl = (mcu.T2H.val << 8) + mcu.T2L.val
-        print("TIMER2 Freq: %d" % self.timer2_freq_calculate(mode_1t == 0B1, thl))
+        print("TIMER2 Freq: %d" % self.get_timer2_freq())
 
     def generate(self):
         mcu = self.base
@@ -86,6 +70,27 @@ class TimerConfig:
         mcu.T0_MODE.select(mcu.lang)
         mcu.T0CLKO.select(mcu.lang)
         self.timer0_period_config()
+
+    def get_timer0_freq(self):
+        mcu = self.base
+        if mcu.T0_MODE.get_value() == 0B10:
+            thl = mcu.TH0.val
+        else:
+            thl = (mcu.TH0.val << 8) + mcu.TL0.val
+        return self.timer0and1_freq_calculate(mcu.T0x12.get_value() == 0B1, mcu.T0_MODE.get_value() == 0B10, thl)
+
+    def get_timer1_freq(self):
+        mcu = self.base
+        if mcu.T1_MODE == 0B10: #mode_2
+            thl = mcu.TH1.val
+        else:
+            thl = (mcu.TH1.val << 8) + mcu.TL1.val
+        return self.timer0and1_freq_calculate(mcu.T1x12.get_value() == 0B1, mcu.T1_MODE.get_value() == 0B10, thl)
+
+    def get_timer2_freq(self):
+        mcu = self.base
+        thl = (mcu.T2H.val << 8) + mcu.T2L.val
+        return self.timer2_freq_calculate(mcu.T2x12.get_value() == 0B1, thl)
 
     def timer0_period_config(self):
         """

@@ -486,7 +486,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM0, "ECOM0", 6,
             {
                 'en': "PCA Module0 Comparison",
-                'cn': "PCA模块0比较功能",
+                'cn': "PCA模块0 比较功能",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -500,7 +500,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM1, "ECOM1", 6,
             {
                 'en': "PCA Module1 Comparison",
-                'cn': "PCA模块1比较功能",
+                'cn': "PCA模块1 比较功能",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -514,7 +514,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM2, "ECOM2", 6,
             {
                 'en': "PCA Module2 Comparison",
-                'cn': "PCA模块2比较功能",
+                'cn': "PCA模块2 比较功能",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -528,7 +528,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM3, "ECOM3", 6,
             {
                 'en': "PCA Module3 Comparison",
-                'cn': "PCA模块3比较功能",
+                'cn': "PCA模块3 比较功能",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -542,7 +542,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM0, "CCAPP0", 5,
             {
                 'en': "PCA Module0 Rising Capture",
-                'cn': "PCA模块0上升沿捕获",
+                'cn': "PCA模块0 上升沿捕获",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -556,7 +556,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM1, "CCAPP1", 5,
             {
                 'en': "PCA Module1 Rising Capture",
-                'cn': "PCA模块1上升沿捕获",
+                'cn': "PCA模块1 上升沿捕获",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -570,7 +570,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM2, "CCAPP2", 5,
             {
                 'en': "PCA Module2 Rising Capture",
-                'cn': "PCA模块2上升沿捕获",
+                'cn': "PCA模块2 上升沿捕获",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -584,7 +584,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM3, "CCAPP3", 5,
             {
                 'en': "PCA Module3 Rising Capture",
-                'cn': "PCA模块3上升沿捕获",
+                'cn': "PCA模块3 上升沿捕获",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -598,7 +598,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM0, "CCAPN0", 4,
             {
                 'en': "PCA Module0 Falling Capture",
-                'cn': "PCA模块0下降沿捕获",
+                'cn': "PCA模块0 下降沿捕获",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -612,7 +612,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM1, "CCAPN1", 4,
             {
                 'en': "PCA Module1 Falling Capture",
-                'cn': "PCA模块1下降沿捕获",
+                'cn': "PCA模块1 下降沿捕获",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -626,7 +626,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM2, "CCAPN2", 4,
             {
                 'en': "PCA Module2 Falling Capture",
-                'cn': "PCA模块2下降沿捕获",
+                'cn': "PCA模块2 下降沿捕获",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -640,7 +640,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM3, "CCAPN3", 4,
             {
                 'en': "PCA Module3 Falling Capture",
-                'cn': "PCA模块3下降沿捕获",
+                'cn': "PCA模块3 下降沿捕获",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -654,7 +654,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM0, "MAT0", 3,
             {
                 'en': "PCA Module0 Match",
-                'cn': "PCA模块0匹配功能",
+                'cn': "PCA模块0 匹配功能",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -668,7 +668,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM1, "MAT1", 3,
             {
                 'en': "PCA Module1 Match",
-                'cn': "PCA模块1匹配功能",
+                'cn': "PCA模块1 匹配功能",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -682,7 +682,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM2, "MAT2", 3,
             {
                 'en': "PCA Module2 Match",
-                'cn': "PCA模块2匹配功能",
+                'cn': "PCA模块2 匹配功能",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -696,7 +696,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM3, "MAT3", 3,
             {
                 'en': "PCA Module3 Match",
-                'cn': "PCA模块3匹配功能",
+                'cn': "PCA模块3 匹配功能",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -710,7 +710,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM0, "TOG0", 2,
             {
                 'en': "PCA Module0 Pulse Output",
-                'cn': "PCA模块0脉冲输出",
+                'cn': "PCA模块0 脉冲输出",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -724,7 +724,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM1, "TOG1", 2,
             {
                 'en': "PCA Module1 Pulse Output",
-                'cn': "PCA模块1脉冲输出",
+                'cn': "PCA模块1 脉冲输出",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -738,7 +738,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM2, "TOG2", 2,
             {
                 'en': "PCA Module2 Pulse Output",
-                'cn': "PCA模块2脉冲输出",
+                'cn': "PCA模块2 脉冲输出",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -752,7 +752,7 @@ class Stc8aDatabase(Stc8Config):
             self.CCAPM3, "TOG3", 2,
             {
                 'en': "PCA Module3 Pulse Output",
-                'cn': "PCA模块3脉冲输出",
+                'cn': "PCA模块3 脉冲输出",
             },
             values={'0': 0B0, '1': 0B1},
             options={
