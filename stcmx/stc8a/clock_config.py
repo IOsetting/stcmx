@@ -22,9 +22,9 @@ class ClockConfig:
             mcu.ENIRC24M.set_value(0B1)
             mcu.ENXOSC.set_value(0B0)
             mcu.ENIRC32K.set_value(0B0)
-            mcu.MX_CLOCK.select(mcu.lang)
-            mcu.IRTRIM.assignment = mcu.MX_CLOCK.get_value()[0]
-            mcu.MX_FOSC.set_value(mcu.MX_CLOCK.get_value()[1])
+            mcu.IRTRIM_S.select(mcu.lang) # free input, this value should be evaluated before configuration
+            mcu.LIRTRIM_0.select(mcu.lang)
+            mcu.MX_FOSC.input(mcu.lang)
 
         elif value == 0B01: # 使用外部时钟输入
             mcu.ENIRC24M.set_value(0B0)
@@ -32,6 +32,7 @@ class ClockConfig:
             mcu.ENIRC32K.set_value(0B0)
             mcu.XITYPE.select(mcu.lang)
             mcu.IRTRIM.reset()
+            mcu.MX_FOSC.input(mcu.lang)
 
         elif value == 0B11: # 使用内部32K IRC
             # 使用内部32K RC
@@ -43,7 +44,7 @@ class ClockConfig:
 
         # 设置分频系数
         v = mcu.CLKDIV_0.select(mcu.lang)
-        mcu.FOSC = self.get_fosc()
+        mcu.FOSC = mcu.MX_FOSC.get_value()
         mcu.SYSCLK = mcu.FOSC if v == 0 else int(mcu.FOSC / v)
         # 设置时钟输出
         v = mcu.MCLKODIV.select(mcu.lang)
@@ -58,7 +59,7 @@ class ClockConfig:
         print(mcu.ENXOSC.get_info(mcu.lang))
         print(mcu.ENIRC32K.get_info(mcu.lang))
         if mcu.MCKSEL.get_value() == 0B00:
-            print(mcu.MX_CLOCK.get_info(mcu.lang))
+            # print(mcu.MX_CLOCK.get_info(mcu.lang))
             print(mcu.MX_FOSC.get_info(mcu.lang))
             print(mcu.IRTRIM_S.get_info(mcu.lang))
             print(mcu.LIRTRIM_0.get_info(mcu.lang))
@@ -69,7 +70,7 @@ class ClockConfig:
             print(mcu.MX_FOSC.get_info(mcu.lang))
 
         print(mcu.CLKDIV_0.get_info(mcu.lang))
-        mcu.FOSC = self.get_fosc()
+        mcu.FOSC = mcu.MX_FOSC.get_value()
         v = mcu.CLKDIV_0.get_value()
         mcu.SYSCLK = mcu.FOSC if v == 0 else int(mcu.FOSC / v)
         print("FOSC: %s" % util.format_frequency(mcu.FOSC))
@@ -81,29 +82,10 @@ class ClockConfig:
             sysclk_output = int(mcu.SYSCLK / mcu.MCLKODIV.get_value())
             print("Output clock: %s" % util.format_frequency(sysclk_output))
 
-    def get_fosc(self):
-        mcu = self.base
-        if mcu.MCKSEL.get_value() == 0B00:
-            base_fosc = mcu.MX_CLOCK.get_value()[1]
-            if mcu.LIRTRIM_0.get_value() == 0B00:
-                fosc = base_fosc
-            elif mcu.LIRTRIM_0.get_value() == 0B01:
-                fosc = base_fosc * (1 + 0.0001)
-            elif mcu.LIRTRIM_0.get_value() == 0B10:
-                fosc = base_fosc * (1 + 0.0004)
-            else:
-                fosc = base_fosc * (1 + 0.001)
-
-        elif mcu.MCKSEL.get_value() == 0B01 or mcu.MCKSEL.get_value() == 0B11:
-            fosc = mcu.MX_FOSC.get_value()
-        else:
-            fosc = 0 # This should not happen
-        return fosc
-
     def get_sysclk(self):
         mcu = self.base
         v = mcu.CLKDIV_0.get_value()
-        fosc = self.get_fosc()
+        fosc = mcu.MX_FOSC.get_value()
         return fosc if v == 0 else int(fosc / v)
 
     def generate(self):
