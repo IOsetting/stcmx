@@ -48,12 +48,13 @@ class Stc8Database(object):
         self.S2BUF   = SFRModel('S2BUF',   0x9B, 0, 0x00, dict(en='UART2 Data', cn='串口2数据寄存器'))
         self.LIRTRIM = SFRModel('LIRTRIM', 0x9E, 0, 0x00, dict(en='Internal OSC Frequency Adjust, May Be Predefined by ISP', cn='IRC频率微调寄存器, ISP可能写入预设值'))
         self.IRTRIM  = SFRModel('IRTRIM',  0x9F, 0, 0x00, dict(en='Internal OSC Frequency Control, May Be Predefined by ISP', cn='IRC频率调整寄存器, ISP可能写入预设值'))
-        self.IE      = SFRModel('IE',      0xA8, 0, 0x00, dict(en='Interrupt Enable', cn='中断允许寄存器'))
+        self.IE      = SFRModel('IE',      0xA8, 0, 0x00, dict(en='Interrupt Enable/Disable Controller', cn='中断使能寄存器'))
         self.SADDR   = SFRModel('SADDR',   0xA9, 0, 0x00, dict(en='UART1 Slave Address', cn='串口1从机地址寄存器'))
         self.WKTCL   = SFRModel('WKTCL',   0xAA, 0, 0x00, dict(en='Wakup Timer Low Byte', cn='掉电唤醒定时器低字节'))
         self.WKTCH   = SFRModel('WKTCL',   0xAB, 0, 0x00, dict(en='Wakeup Timer High Byte', cn='掉电唤醒定时器高字节'))
         self.S3CON   = SFRModel('S3CON',   0xAC, 0, 0x00, dict(en='UART3 Control', cn='串口3控制寄存器'))
         self.S3BUF   = SFRModel('S3BUF',   0xAD, 0, 0x00, dict(en='UART3 Data', cn='串口3数据寄存器'))
+        self.IE2     = SFRModel('IE2',     0xAF, 0, 0x00, dict(en='Interrupt Enable/Disable Controller 2', cn='中断使能寄存器2'))
         self.SADEN   = SFRModel('SADEN',   0xB9, 0, 0x00, dict(en='UART1 Slave Deny Address', cn='串口1从机地址屏蔽寄存'))
         self.P_SW2   = SFRModel('P_SW2',   0xBA, 0, 0x00, dict(en='Peripheral Port Switch', cn='外设端口切换寄存器2'))
         self.PSW     = SFRModel('PSW',     0xD0, 0, 0x00, dict(en='Program Status', cn='程序状态字寄存器'))
@@ -149,8 +150,9 @@ class Stc8Database(object):
         self.IRTRIM_S = SFRBitsModel(
             self.IRTRIM, "IRTRIM_S", 0,
             {
-                'en': "Internal OSC Frequency Adjust, value in range [0, 255], each step increase by around 0.24%",
-                'cn': "内部时钟振荡器频率调整, 取值范围[0, 255], 每级增加大约0.24%",
+                'en': "Internal RC Frequency Trimming, value in range [0, 255], maximum frequency is around "
+                      "two times of minimum frequency, hex input (0x??) is supported",
+                'cn': "内部时钟振荡器频率调节, 取值范围[0, 255], 频率上限约为下限的2倍. 支持输入十六进制数 0X??",
             },
             len=8,
         )
@@ -553,6 +555,171 @@ class Stc8Database(object):
                       'cn': '启用错误检测, 此时 SCON 的SM0/FE作为FE使用'},
             }
         )
+
+        self.EA = SFRBitsModel(
+            self.IE, "EA", 7,
+            {'en': "Global Interrupt Enable/Disable", 'cn': "总中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """总中断允许控制"""
+
+        self.ELVD = SFRBitsModel(
+            self.IE, "ELVD", 6,
+            {'en': "Low Voltage Detected Interrupt Enable/Disable", 'cn': "低压检测中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """低压检测中断允许控制"""
+
+        self.EADC = SFRBitsModel(
+            self.IE, "EADC", 5,
+            {'en': "ADC Interrupt Enable/Disable", 'cn': "ADC转换中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """ADC转换中断允许控制"""
+
+        self.ES = SFRBitsModel(
+            self.IE, "ES", 4,
+            {'en': "UART1 Interrupt Enable/Disable", 'cn': "串口1中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """串口1中断允许控制"""
+
+        self.ET1 = SFRBitsModel(
+            self.IE, "ET1", 3,
+            {'en': "Timer1 Interrupt Enable/Disable", 'cn': "定时器1中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """定时器1中断允许控制"""
+
+        self.EX1 = SFRBitsModel(
+            self.IE, "EX1", 2,
+            {'en': "INT1 Interrupt Enable/Disable", 'cn': "外部中断1中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """外部中断1中断允许控制"""
+
+        self.ET0 = SFRBitsModel(
+            self.IE, "ET0", 1,
+            {'en': "Timer0 Interrupt Enable/Disable", 'cn': "定时器0中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """定时器0中断允许控制"""
+
+        self.EX0 = SFRBitsModel(
+            self.IE, "EX0", 0,
+            {'en': "INT0 Interrupt Enable/Disable", 'cn': "外部中断0中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """外部中断0中断允许控制"""
+
+        self.ET4 = SFRBitsModel(
+            self.IE2, "ET4", 6,
+            {'en': "Timer4 Interrupt Enable/Disable", 'cn': "定时器4中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """定时器4中断允许控制"""
+
+        self.ET3 = SFRBitsModel(
+            self.IE2, "ET3", 5,
+            {'en': "Timer3 Interrupt Enable/Disable", 'cn': "定时器3中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """定时器3中断允许控制"""
+
+        self.ES4 = SFRBitsModel(
+            self.IE2, "ES4", 4,
+            {'en': "UART4 Interrupt Enable/Disable", 'cn': "串口4中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """串口4中断允许控制"""
+
+        self.ES3 = SFRBitsModel(
+            self.IE2, "ES3", 3,
+            {'en': "UART3 Interrupt Enable/Disable", 'cn': "串口3中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """串口3中断允许控制"""
+
+        self.ET2 = SFRBitsModel(
+            self.IE2, "ET2", 2,
+            {'en': "Timer2 Interrupt Enable/Disable", 'cn': "定时器2中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """定时器2中断允许控制"""
+
+        self.ESPI = SFRBitsModel(
+            self.IE2, "ESPI", 1,
+            {'en': "SPI Interrupt Enable/Disable", 'cn': "SPI中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """SPI中断允许控制"""
+
+        self.ES2 = SFRBitsModel(
+            self.IE2, "ES2", 1,
+            {'en': "UART2 Interrupt Enable/Disable", 'cn': "串口2中断允许控制"},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disallow', 'cn': '禁止'},
+                '1': {'en': 'Allow', 'cn': '允许'},
+            }
+        )
+        """串口2中断允许控制"""
 
     def define_lang(self):
         v = self.MX_LANG.select(self.lang)

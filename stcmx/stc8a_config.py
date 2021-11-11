@@ -6,6 +6,7 @@ from stcmx.stc8a.uart_config import UartConfig
 from stcmx.stc8a.adc_config import AdcConfig
 from stcmx.stc8a.pca_config import PcaConfig
 from stcmx.stc8a.pin_config import PinConfig
+from stcmx.stc8a.int_config import IntConfig
 
 
 class Stc8aConfig(Stc8aDatabase, ConfigControl):
@@ -19,6 +20,7 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
         self.adc_config = AdcConfig(self)
         self.pca_config = PcaConfig(self)
         self.pin_config = PinConfig(self)
+        self.int_config = IntConfig(self)
 
         self.uart1: dict = {}
         # __init__ end
@@ -156,6 +158,8 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
         self.pca_config.info()
         print('')
         self.pin_config.info()
+        print('')
+        self.int_config.info()
 
     def generate(self):
         print("Code for current configuration:\n MCU Type: %s\n" % self.name)
@@ -172,3 +176,5 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
         self.pca_config.generate()
         print('')
         self.pin_config.generate()
+        print('')
+        self.int_config.generate()

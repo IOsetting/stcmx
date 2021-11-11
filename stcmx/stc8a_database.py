@@ -33,18 +33,18 @@ class Stc8aDatabase(Stc8Config):
         self.CCAPM3    = SFRModel('CCAPM3',    0xDD, 0, 0x00, dict(en='PCA Module3 Mode Control', cn='PCA模块3模式控制寄存器'))
         self.CL        = SFRModel('CL',        0xE9, 0, 0x00, dict(en='PCA Counter Low Byte', cn='PCA计数器低字节'))
         self.CH        = SFRModel('CH',        0xF9, 0, 0x00, dict(en='PCA Counter High Byte', cn='PCA计数器高字节'))
-        self.CCAP0L    = SFRModel('CCAP0L',    0xEA, 0, 0x00, dict(en='PCA Module0 Low Byte', cn='PCA模块0低字节'))
-        self.CCAP1L    = SFRModel('CCAP1L',    0xEB, 0, 0x00, dict(en='PCA Module1 Low Byte', cn='PCA模块1低字节'))
-        self.CCAP2L    = SFRModel('CCAP2L',    0xEC, 0, 0x00, dict(en='PCA Module2 Low Byte', cn='PCA模块2低字节'))
-        self.CCAP3L    = SFRModel('CCAP3L',    0xED, 0, 0x00, dict(en='PCA Module3 Low Byte', cn='PCA模块3低字节'))
+        self.CCAP0L    = SFRModel('CCAP0L',    0xEA, 0, 0x00, dict(en='PCA Module0 Low Byte, PWM Compare Value', cn='PCA模块0低字节,PWM比较值'))
+        self.CCAP1L    = SFRModel('CCAP1L',    0xEB, 0, 0x00, dict(en='PCA Module1 Low Byte, PWM Compare Value', cn='PCA模块1低字节,PWM比较值'))
+        self.CCAP2L    = SFRModel('CCAP2L',    0xEC, 0, 0x00, dict(en='PCA Module2 Low Byte, PWM Compare Value', cn='PCA模块2低字节,PWM比较值'))
+        self.CCAP3L    = SFRModel('CCAP3L',    0xED, 0, 0x00, dict(en='PCA Module3 Low Byte, PWM Compare Value', cn='PCA模块3低字节,PWM比较值'))
         self.PCA_PWM0  = SFRModel('PCA_PWM0',  0xF2, 0, 0x00, dict(en='PCA Module0 PWM Mode Control', cn='PCA模块0 PWM模式寄存器'))
         self.PCA_PWM1  = SFRModel('PCA_PWM1',  0xF3, 0, 0x00, dict(en='PCA Module1 PWM Mode Control', cn='PCA模块1 PWM模式寄存器'))
         self.PCA_PWM2  = SFRModel('PCA_PWM2',  0xF4, 0, 0x00, dict(en='PCA Module2 PWM Mode Control', cn='PCA模块2 PWM模式寄存器'))
         self.PCA_PWM3  = SFRModel('PCA_PWM3',  0xF5, 0, 0x00, dict(en='PCA Module3 PWM Mode Control', cn='PCA模块3 PWM模式寄存器'))
-        self.CCAP0H    = SFRModel('CCAP0H',    0xFA, 0, 0x00, dict(en='PCA Module0 High Byte', cn='PCA模块0高字节'))
-        self.CCAP1H    = SFRModel('CCAP1H',    0xFB, 0, 0x00, dict(en='PCA Module1 High Byte', cn='PCA模块1高字节'))
-        self.CCAP2H    = SFRModel('CCAP2H',    0xFC, 0, 0x00, dict(en='PCA Module2 High Byte', cn='PCA模块2高字节'))
-        self.CCAP3H    = SFRModel('CCAP3H',    0xFD, 0, 0x00, dict(en='PCA Module3 High Byte', cn='PCA模块3高字节'))
+        self.CCAP0H    = SFRModel('CCAP0H',    0xFA, 0, 0x00, dict(en='PCA Module0 High Byte, PWM Reload Value', cn='PCA模块0高字节,PWM重载值'))
+        self.CCAP1H    = SFRModel('CCAP1H',    0xFB, 0, 0x00, dict(en='PCA Module1 High Byte, PWM Reload Value', cn='PCA模块1高字节,PWM重载值'))
+        self.CCAP2H    = SFRModel('CCAP2H',    0xFC, 0, 0x00, dict(en='PCA Module2 High Byte, PWM Reload Value', cn='PCA模块2高字节,PWM重载值'))
+        self.CCAP3H    = SFRModel('CCAP3H',    0xFD, 0, 0x00, dict(en='PCA Module3 High Byte, PWM Reload Value', cn='PCA模块3高字节,PWM重载值'))
 
         # Extend RAM SFR
         self.IRC24MCR = SFRModel('IRC24MCR', 0xFE02, 1, 0x80, dict(en='Internal High Speed OSC Control', cn='内部24M振荡器控制寄存器'))
@@ -56,10 +56,10 @@ class Stc8aDatabase(Stc8Config):
             'MX_FOSC',
             24000000,
             {
-                'en': "OSC/CLK frequency, value in range [16000000, 28000000]",
-                'cn': "振荡源或时钟频率, 值在[16000000, 28000000]区间内",
+                'en': "OSC/CLK frequency, value in range [16000000, 36000000]",
+                'cn': "振荡源或时钟频率, 值在[16000000, 36000000]区间内",
             },
-            valid=lambda a: 16000000 <= a <= 28000000,
+            valid=lambda a: 16000000 <= a <= 36000000,
         )
 
         self.MX_CLOCK = SelectionModel(

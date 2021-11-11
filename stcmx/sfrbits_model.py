@@ -1,3 +1,4 @@
+import re
 from stcmx.sfr_model import SFRModel
 
 
@@ -74,7 +75,10 @@ class SFRBitsModel:
             while True:
                 arg = input(self.get_prompt(lang))
                 if len(arg) > 0:
-                    value = int(arg)
+                    if re.match(r'0x[0-9A-Fa-f]{2}', arg) is not None:
+                        value = int(arg, 16)
+                    else:
+                        value = int(arg)
                     if 0 <= value <= self.masks[self.len]:
                         self.set_value(value)
                         break

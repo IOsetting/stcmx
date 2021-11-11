@@ -90,6 +90,7 @@ class TimerConfig:
         mcu.T0_GATE.select(mcu.lang)
         mcu.T0_MODE.select(mcu.lang)
         mcu.T0CLKO.select(mcu.lang)
+        mcu.ET0.select(mcu.lang)
         self.timer0_period_config()
 
     def timer0_period_config(self):
@@ -142,6 +143,7 @@ class TimerConfig:
             mcu.T1_CT.set_value(0B0)  # 工作方式timer
             mcu.T1_GATE.set_value(0B0) # 触发方式普通
             mcu.T1CLKO.set_value(0B0)  # 关闭输出
+            mcu.ET1.set_value(0B0) # 关闭中断
             while True:
                 t1mode = mcu.T1_MODE.select(mcu.lang)
                 if t1mode == 0B00 or t1mode == 0B10:
@@ -159,6 +161,7 @@ class TimerConfig:
             mcu.T1_CT.select(mcu.lang)
             mcu.T1_GATE.select(mcu.lang)
             mcu.T1CLKO.select(mcu.lang)
+            mcu.ET1.select(mcu.lang)
             t1mode = mcu.T1_MODE.select(mcu.lang)
 
             if t1mode == 0B11:
@@ -247,6 +250,7 @@ class TimerConfig:
             mode_1t = mcu.T2x12.select(mcu.lang) == 0B1 # 1T/12T模式
             mcu.T2_CT.set_value(0B0)  # 工作方式timer
             mcu.T2CLKO.set_value(0B0)  # 关闭输出
+            mcu.ET2.set_value(0B0)
             tm2ps = 0 # 串口使用定时器2时, 不使用预分频
 
         else: # 普通模式, 直接配置定时器2
@@ -254,6 +258,7 @@ class TimerConfig:
             mode_1t = mcu.T2x12.select(mcu.lang) == 0B1
             mcu.T2_CT.select(mcu.lang)
             mcu.T2CLKO.select(mcu.lang)
+            mcu.ET2.select(mcu.lang)
             tm2ps = mcu.TM2PS_V.select(mcu.lang)
 
         # 收集输入频率, 计算TH/TL
