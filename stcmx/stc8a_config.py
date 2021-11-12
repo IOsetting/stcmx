@@ -178,7 +178,7 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
 
     def generate(self):
         print("Code for current configuration:\n MCU Type: %s\n" % self.name)
-        print('''#include "stc8.h"''')
+        print('''#include "stc8a.h"''')
         print('')
         self.clock_config.generate()
         print('')

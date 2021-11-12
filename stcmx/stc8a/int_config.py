@@ -37,4 +37,42 @@ class IntConfig:
         mcu.IE.output_code(mcu.verbose, mcu.lang)
         mcu.IE2.output_code(mcu.verbose, mcu.lang)
         print("}")
+        if mcu.ET0.get_value() == 0B1:
+            print('''
+INTERRUPT(timer0_isr, 1)
+{
+  // Do something
+}
+''')
+        if mcu.ET1.get_value() == 0B1:
+            print('''
+INTERRUPT(timer1_isr, 3)
+{
+  // Do something
+}
+''')
+        if mcu.ET2.get_value() == 0B1:
+            print('''
+INTERRUPT(timer2_isr, 12)
+{
+  // Do something
+  AUXINTIF &= ~T2IF;
+}
+''')
+        if mcu.ET3.get_value() == 0B1:
+            print('''
+INTERRUPT(timer3_isr, 19)
+{
+  // Do something
+  AUXINTIF &= ~T3IF;
+}
+''')
+        if mcu.ET4.get_value() == 0B1:
+            print('''
+INTERRUPT(timer4_isr, 20)
+{
+  // Do something
+  AUXINTIF &= ~T4IF;
+}
+''')
 
