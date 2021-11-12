@@ -7,6 +7,7 @@ from stcmx.stc8a.adc_config import AdcConfig
 from stcmx.stc8a.pca_config import PcaConfig
 from stcmx.stc8a.pin_config import PinConfig
 from stcmx.stc8a.int_config import IntConfig
+from stcmx.stc8a.spi_config import SpiConfig
 
 
 class Stc8aConfig(Stc8aDatabase, ConfigControl):
@@ -21,6 +22,7 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
         self.pca_config = PcaConfig(self)
         self.pin_config = PinConfig(self)
         self.int_config = IntConfig(self)
+        self.spi_config = SpiConfig(self)
 
         self.uart1: dict = {}
         # __init__ end
@@ -146,6 +148,17 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
             'cn': "==== PCA3/PWM3配置结束 ====",
         })
 
+    def define_spi(self):
+        self.print({
+            'en': "==== SPI CONFIG START ====",
+            'cn': "==== SPI配置开始 ====",
+        })
+        self.spi_config.config()
+        self.print({
+            'en': "==== SPI CONFIG END ====",
+            'cn': "==== SPI配置结束 ====",
+        })
+
     def info(self):
         self.clock_config.info()
         print('')
@@ -156,6 +169,8 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
         self.adc_config.info()
         print('')
         self.pca_config.info()
+        print('')
+        self.spi_config.info()
         print('')
         self.pin_config.info()
         print('')
@@ -174,6 +189,8 @@ class Stc8aConfig(Stc8aDatabase, ConfigControl):
         self.adc_config.generate()
         print('')
         self.pca_config.generate()
+        print('')
+        self.spi_config.generate()
         print('')
         self.pin_config.generate()
         print('')

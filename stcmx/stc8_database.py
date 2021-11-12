@@ -42,6 +42,12 @@ class Stc8Database(object):
         self.TH1     = SFRModel('TH1',     0x8D, 0, 0x00, dict(en='Timer1 High 8bit', cn='定时器1高8位寄存器'))
         self.AUXR    = SFRModel('AUXR',    0x8E, 0, 0x01, dict(en='Auxr Control', cn='辅助寄存器'))
         self.INTCLKO = SFRModel('INTCLKO', 0x8F, 0, 0x00, dict(en='Timer output and Interrupt Control', cn='中断与时钟输出控制寄存器'))
+        self.P1M1    = SFRModel('P1M1',    0x91, 0, 0x00, dict(en='P1 Port Config 1', cn='P1口配置寄存器1'))
+        self.P1M0    = SFRModel('P1M0',    0x92, 0, 0x00, dict(en='P1 Port Config 0', cn='P1口配置寄存器0'))
+        self.P0M1    = SFRModel('P0M1',    0x93, 0, 0x00, dict(en='P0 Port Config 1', cn='P0口配置寄存器1'))
+        self.P0M0    = SFRModel('P0M0',    0x94, 0, 0x00, dict(en='P0 Port Config 0', cn='P0口配置寄存器0'))
+        self.P2M1    = SFRModel('P2M1',    0x95, 0, 0x00, dict(en='P2 Port Config 1', cn='P2口配置寄存器1'))
+        self.P2M0    = SFRModel('P2M0',    0x96, 0, 0x00, dict(en='P2 Port Config 0', cn='P2口配置寄存器0'))
         self.SCON    = SFRModel('SCON',    0x98, 0, 0x00, dict(en='UART1 Control', cn='串口1控制寄存器'))
         self.SBUF    = SFRModel('SBUF',    0x99, 0, 0x00, dict(en='UART1 Data', cn='串口1数据寄存器'))
         self.S2CON   = SFRModel('S2CON',   0x9A, 0, 0x40, dict(en='UART2 Control', cn='串口2控制寄存器'))
@@ -55,8 +61,17 @@ class Stc8Database(object):
         self.S3CON   = SFRModel('S3CON',   0xAC, 0, 0x00, dict(en='UART3 Control', cn='串口3控制寄存器'))
         self.S3BUF   = SFRModel('S3BUF',   0xAD, 0, 0x00, dict(en='UART3 Data', cn='串口3数据寄存器'))
         self.IE2     = SFRModel('IE2',     0xAF, 0, 0x00, dict(en='Interrupt Enable/Disable Controller 2', cn='中断使能寄存器2'))
+        self.P3M1    = SFRModel('P3M1',    0xB1, 0, 0x00, dict(en='P3 Port Config 1', cn='P3口配置寄存器1'))
+        self.P3M0    = SFRModel('P3M0',    0xB2, 0, 0x00, dict(en='P3 Port Config 0', cn='P3口配置寄存器0'))
+        self.P4M1    = SFRModel('P4M1',    0xB3, 0, 0x00, dict(en='P4 Port Config 1', cn='P4口配置寄存器1'))
+        self.P4M0    = SFRModel('P4M0',    0xB4, 0, 0x00, dict(en='P4 Port Config 0', cn='P4口配置寄存器0'))
         self.SADEN   = SFRModel('SADEN',   0xB9, 0, 0x00, dict(en='UART1 Slave Deny Address', cn='串口1从机地址屏蔽寄存'))
         self.P_SW2   = SFRModel('P_SW2',   0xBA, 0, 0x00, dict(en='Peripheral Port Switch', cn='外设端口切换寄存器2'))
+        self.P5M1    = SFRModel('P5M1',    0xC9, 0, 0x00, dict(en='P5 Port Config 1', cn='P5口配置寄存器1'))
+        self.P5M0    = SFRModel('P5M0',    0xCA, 0, 0x00, dict(en='P5 Port Config 0', cn='P5口配置寄存器0'))
+        self.P6M1    = SFRModel('P6M1',    0xCB, 0, 0x00, dict(en='P6 Port Config 1', cn='P6口配置寄存器1'))
+        self.P6M0    = SFRModel('P6M0',    0xCC, 0, 0x00, dict(en='P6 Port Config 0', cn='P6口配置寄存器0'))
+        self.SPCTL   = SFRModel('SPCTL',   0xCE, 0, 0x00, dict(en='SPI Control', cn='SPI控制'))
         self.PSW     = SFRModel('PSW',     0xD0, 0, 0x00, dict(en='Program Status', cn='程序状态字寄存器'))
         self.T4T3M   = SFRModel('T4T3M',   0xD1, 0, 0x00, dict(en='Timer4/3 Control', cn='定时器4/3控制寄存器'))
         self.T4H     = SFRModel('T4H',     0xD2, 0, 0x00, dict(en='Timer4 High Byte', cn='定时器4高字节'))
@@ -65,20 +80,8 @@ class Stc8Database(object):
         self.T3L     = SFRModel('T3L',     0xD5, 0, 0x00, dict(en='Timer4 Low Byte', cn='定时器3低字节'))
         self.T2H     = SFRModel('T2H',     0xD6, 0, 0x00, dict(en='Timer3 High Byte', cn='定时器2高字节'))
         self.T2L     = SFRModel('T2L',     0xD7, 0, 0x00, dict(en='Timer4 Low Byte', cn='定时器2低字节'))
-        self.P1M1    = SFRModel('P1M1',    0x91, 0, 0x00, dict(en='P1 Port Config 1', cn='P1口配置寄存器1'))
-        self.P1M0    = SFRModel('P1M0',    0x92, 0, 0x00, dict(en='P1 Port Config 0', cn='P1口配置寄存器0'))
-        self.P0M1    = SFRModel('P0M1',    0x93, 0, 0x00, dict(en='P0 Port Config 1', cn='P0口配置寄存器1'))
-        self.P0M0    = SFRModel('P0M0',    0x94, 0, 0x00, dict(en='P0 Port Config 0', cn='P0口配置寄存器0'))
-        self.P2M1    = SFRModel('P2M1',    0x95, 0, 0x00, dict(en='P2 Port Config 1', cn='P2口配置寄存器1'))
-        self.P2M0    = SFRModel('P2M0',    0x96, 0, 0x00, dict(en='P2 Port Config 0', cn='P2口配置寄存器0'))
-        self.P3M1    = SFRModel('P3M1',    0xB1, 0, 0x00, dict(en='P3 Port Config 1', cn='P3口配置寄存器1'))
-        self.P3M0    = SFRModel('P3M0',    0xB2, 0, 0x00, dict(en='P3 Port Config 0', cn='P3口配置寄存器0'))
-        self.P4M1    = SFRModel('P4M1',    0xB3, 0, 0x00, dict(en='P4 Port Config 1', cn='P4口配置寄存器1'))
-        self.P4M0    = SFRModel('P4M0',    0xB4, 0, 0x00, dict(en='P4 Port Config 0', cn='P4口配置寄存器0'))
-        self.P5M1    = SFRModel('P5M1',    0xC9, 0, 0x00, dict(en='P5 Port Config 1', cn='P5口配置寄存器1'))
-        self.P5M0    = SFRModel('P5M0',    0xCA, 0, 0x00, dict(en='P5 Port Config 0', cn='P5口配置寄存器0'))
-        self.P6M1    = SFRModel('P6M1',    0xCB, 0, 0x00, dict(en='P6 Port Config 1', cn='P6口配置寄存器1'))
-        self.P6M0    = SFRModel('P6M0',    0xCC, 0, 0x00, dict(en='P6 Port Config 0', cn='P6口配置寄存器0'))
+
+
         self.P7M1    = SFRModel('P7M1',    0xE1, 0, 0x00, dict(en='P7 Port Config 1', cn='P7口配置寄存器1'))
         self.P7M0    = SFRModel('P7M0',    0xE2, 0, 0x00, dict(en='P7 Port Config 0', cn='P7口配置寄存器0'))
 
@@ -720,6 +723,89 @@ class Stc8Database(object):
             }
         )
         """串口2中断允许控制"""
+
+        self.SSIG = SFRBitsModel(
+            self.SPCTL, "SSIG", 7,
+            {'en': 'SS Pin Function Control Bit', 'cn': 'SS管脚功能控制位'},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'SS Pin Decide Master/Slave', 'cn': 'SS脚决定器件是主机还是从机'},
+                '1': {'en': 'Ignore SS Pin Control, Use MSTR', 'cn': '忽略SS脚功能, 使用MSTR确定器件是主机还是从机'},
+            }
+        )
+        """SS管脚功能控制位"""
+
+        self.SPEN = SFRBitsModel(
+            self.SPCTL, "SPEN", 6,
+            {'en': 'SPI Enable/Disable', 'cn': 'SPI启用/关闭'},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Disable', 'cn': '关闭'},
+                '1': {'en': 'Enable', 'cn': '启用'},
+            }
+        )
+        """SPI启用/关闭"""
+
+        self.DORD = SFRBitsModel(
+            self.SPCTL, "DORD", 5,
+            {'en': 'SPI Data Send/Recive Order', 'cn': 'SPI数据发送接收的顺序'},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Send/Receive High Bits First(MSB)', 'cn': '先发送接收数据高位(MSB)'},
+                '1': {'en': 'Send/Receive Low Bits First(LSB)', 'cn': '先发送接收数据地位(LSB)'},
+            }
+        )
+        """SPI数据发送接收的顺序"""
+
+        self.MSTR = SFRBitsModel(
+            self.SPCTL, "MSTR", 4,
+            {'en': 'SPI Master/Slave Mode', 'cn': 'SPI主从模式选择'},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'Slave(When SSIG is Set)', 'cn': '从机模式(当SSIG为高)'},
+                '1': {'en': 'Master(When SSIG is Set)', 'cn': '主机模式(当SSIG为高)'},
+            }
+        )
+        """SPI主从模式选择"""
+
+        self.CPOL = SFRBitsModel(
+            self.SPCTL, "CPOL", 3,
+            {'en': 'SPI Clock Pole', 'cn': 'SPI时钟极性'},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'SCLK Is Low When Idle', 'cn': 'SCLK空闲时低电平(前时钟沿上升后时钟沿下降)'},
+                '1': {'en': 'SCLK Is High When Idle', 'cn': 'SCLK空闲时高电平(前时钟沿下降后时钟沿上升)'},
+            }
+        )
+        """SPI时钟极性"""
+
+        self.CPHA = SFRBitsModel(
+            self.SPCTL, "CPHA", 2,
+            {'en': 'SPI Clock Phase', 'cn': 'SPI时钟相位'},
+            values={'0': 0B0, '1': 0B1},
+            options={
+                '0': {'en': 'SSIG=0, Low SS Pin To Drive First Bit', 'cn': 'SS管脚为低电平驱动第1位数据并在SCLK后时钟沿改变数据, 前时钟沿采样数据, 必须SSIG=0'},
+                '1': {'en': 'SCLK Pre-Clock Drive Data, Post-Clock Sample Data', 'cn': '数据在SCLK前时钟沿驱动, 后时钟沿采样'},
+            }
+        )
+        """SPI时钟相位"""
+
+        self.SPR = SFRBitsModel(
+            self.SPCTL, 'SPR', 0,
+            {
+                'en': "SPI Clock",
+                'cn': "SPI时钟",
+            },
+            len=2,
+            values={'0': 0B00, '1': 0B01, '2': 0B10, '3': 0B11},
+            options={
+                '0': {'en': 'SYSCLK/4', 'cn': 'SYSCLK/4'},
+                '1': {'en': 'SYSCLK/8', 'cn': 'SYSCLK/8'},
+                '2': {'en': 'SYSCLK/16', 'cn': 'SYSCLK/16'},
+                '3': {'en': 'SYSCLK/32', 'cn': 'SYSCLK/32'},
+            }
+        )
+        """SPI时钟"""
 
     def define_lang(self):
         v = self.MX_LANG.select(self.lang)

@@ -48,3 +48,6 @@ class ConfigControl:
 
     def define_pca3(self):
         pass
+
+    def define_spi(self):
+        pass

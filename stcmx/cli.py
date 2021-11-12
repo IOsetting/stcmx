@@ -76,6 +76,9 @@ class Cli(cmd.Cmd):
     def do_pca3(self, lang):
         self.codegen.define_pca3()
 
+    def do_spi(self, line):
+        self.codegen.define_spi()
+
     def do_info(self, line):
         self.codegen.info()
 
