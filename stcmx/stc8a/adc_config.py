@@ -15,9 +15,10 @@ class AdcConfig:
     def info(self):
         mcu = self.base
         print(mcu.ADC_POWER.get_info(mcu.lang))
-        print(mcu.ADC_RESFMT.get_info(mcu.lang))
-        print(mcu.ADC_SPEED.get_info(mcu.lang))
-        print(mcu.ADC_CHS.get_info(mcu.lang))
+        if mcu.ADC_POWER.get_value() == 0B1:
+            print(mcu.ADC_RESFMT.get_info(mcu.lang))
+            print(mcu.ADC_SPEED.get_info(mcu.lang))
+            print(mcu.ADC_CHS.get_info(mcu.lang))
 
     def generate(self):
         mcu = self.base

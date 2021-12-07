@@ -330,8 +330,8 @@ class Stc8aDatabase(Stc8Config):
         self.ADC_POWER = SFRBitsModel(
             self.ADC_CONTR, "ADC_POWER", 7,
             {
-                'en': "ADC Power Control",
-                'cn': "ADC电源控制",
+                'en': "ADC ON/OFF",
+                'cn': "ADC启用/关闭",
             },
             values={'0': 0B0, '1': 0B1},
             options={
@@ -339,7 +339,7 @@ class Stc8aDatabase(Stc8Config):
                 '1': {'en': 'ON', 'cn': '开启'},
             }
         )
-        """ADC电源控制"""
+        """ADC启用/关闭"""
 
         self.ADC_START = SFRBitsModel(
             self.ADC_CONTR, "ADC_START", 6,
@@ -353,7 +353,7 @@ class Stc8aDatabase(Stc8Config):
                 '1': {'en': 'Start', 'cn': '启动'},
             }
         )
-        """ADC电源控制"""
+        """ADC转换启动控制"""
 
         self.ADC_CHS = SFRBitsModel(
             self.ADC_CONTR, 'ADC_CHS', 0,
@@ -419,8 +419,8 @@ class Stc8aDatabase(Stc8Config):
         self.ADC_SPEED = SFRBitsModel(
             self.ADCCFG, "ADC_SPEED", 0,
             {
-                'en': "ADC Clock Prescaler",
-                'cn': "ADC时钟预分频",
+                'en': "ADC Clock Prescaler, Fadc＝SYSCLK/2/16/(SPEED[3:0]+1)",
+                'cn': "ADC时钟预分频数, Fadc＝SYSCLK/2/16/(SPEED[3:0]+1)",
             },
             len=4,
             values={
@@ -443,22 +443,22 @@ class Stc8aDatabase(Stc8Config):
 
             },
             options={
-                '0': {'en': 'SYSCLK/32', 'cn': 'SYSCLK/32'},
-                '1': {'en': 'SYSCLK/64', 'cn': 'SYSCLK/64'},
-                '2': {'en': 'SYSCLK/96', 'cn': 'SYSCLK/96'},
-                '3': {'en': 'SYSCLK/128', 'cn': 'SYSCLK/128'},
-                '4': {'en': 'SYSCLK/160', 'cn': 'SYSCLK/160'},
-                '5': {'en': 'SYSCLK/192', 'cn': 'SYSCLK/192'},
-                '6': {'en': 'SYSCLK/224', 'cn': 'SYSCLK/224'},
-                '7': {'en': 'SYSCLK/256', 'cn': 'SYSCLK/256'},
-                '8': {'en': 'SYSCLK/288', 'cn': 'SYSCLK/288'},
-                '9': {'en': 'SYSCLK/320', 'cn': 'SYSCLK/320'},
-                '10': {'en': 'SYSCLK/352', 'cn': 'SYSCLK/352'},
-                '11': {'en': 'SYSCLK/384', 'cn': 'SYSCLK/384'},
-                '12': {'en': 'SYSCLK/416', 'cn': 'SYSCLK/416'},
-                '13': {'en': 'SYSCLK/448', 'cn': 'SYSCLK/448'},
-                '14': {'en': 'SYSCLK/480', 'cn': 'SYSCLK/480'},
-                '15': {'en': 'SYSCLK/512', 'cn': 'SYSCLK/512'},
+                '0': {'en': '0, Fadc=SYSCLK/32', 'cn': '0, Fadc=SYSCLK/32'},
+                '1': {'en': '1, Fadc=SYSCLK/64', 'cn': '1, Fadc=SYSCLK/64'},
+                '2': {'en': '2, Fadc=SYSCLK/96', 'cn': '2, Fadc=SYSCLK/96'},
+                '3': {'en': '3, Fadc=SYSCLK/128', 'cn': '3, Fadc=SYSCLK/128'},
+                '4': {'en': '4, Fadc=SYSCLK/160', 'cn': '4, Fadc=SYSCLK/160'},
+                '5': {'en': '5, Fadc=SYSCLK/192', 'cn': '5, Fadc=SYSCLK/192'},
+                '6': {'en': '6, Fadc=SYSCLK/224', 'cn': '6, Fadc=SYSCLK/224'},
+                '7': {'en': '7, Fadc=SYSCLK/256', 'cn': '7, Fadc=SYSCLK/256'},
+                '8': {'en': '8, Fadc=SYSCLK/288', 'cn': '8, Fadc=SYSCLK/288'},
+                '9': {'en': '9, Fadc=SYSCLK/320', 'cn': '9, Fadc=SYSCLK/320'},
+                '10': {'en': '10, Fadc=SYSCLK/352', 'cn': '10, Fadc=SYSCLK/352'},
+                '11': {'en': '11, Fadc=SYSCLK/384', 'cn': '11, Fadc=SYSCLK/384'},
+                '12': {'en': '12, Fadc=SYSCLK/416', 'cn': '12, Fadc=SYSCLK/416'},
+                '13': {'en': '13, Fadc=SYSCLK/448', 'cn': '13, Fadc=SYSCLK/448'},
+                '14': {'en': '14, Fadc=SYSCLK/480', 'cn': '14, Fadc=SYSCLK/480'},
+                '15': {'en': '15, Fadc=SYSCLK/512', 'cn': '15, Fadc=SYSCLK/512'},
             }
         )
         """ADC时钟预分频"""
@@ -490,7 +490,7 @@ class Stc8aDatabase(Stc8Config):
                 '1': {'en': 'Stop Counting', 'cn': '停止计数'},
             }
         )
-        """PCA运行控制"""
+        """PCA空闲时停止计数"""
 
         self.CPS = SFRBitsModel(
             self.CMOD, "CPS", 1,
