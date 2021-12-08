@@ -784,8 +784,10 @@ class Stc8Database(object):
             {'en': 'SPI Clock Phase', 'cn': 'SPI时钟相位'},
             values={'0': 0B0, '1': 0B1},
             options={
-                '0': {'en': 'SSIG=0, Low SS Pin To Drive First Bit', 'cn': 'SS管脚为低电平驱动第1位数据并在SCLK后时钟沿改变数据, 前时钟沿采样数据, 必须SSIG=0'},
-                '1': {'en': 'SCLK Pre-Clock Drive Data, Post-Clock Sample Data', 'cn': '数据在SCLK前时钟沿驱动, 后时钟沿采样'},
+                '0': {'en': 'Data driven by SS pin is low', 'cn': 'SS管脚为低电平驱动第1位数据并在SCLK后时钟沿改变数据, 前时钟沿采样数据, 必须SSIG=0'},
+                '1': {
+                    'en': 'Data driven by the leading edge of SPI clock, then sampled on the trailing edge',
+                    'cn': '数据在SCLK前时钟沿驱动, 后时钟沿采样'},
             }
         )
         """SPI时钟相位"""

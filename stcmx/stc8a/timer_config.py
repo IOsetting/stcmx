@@ -69,7 +69,8 @@ class TimerConfig:
         mcu.T0_GATE.select(mcu.lang)
         mcu.T0_MODE.select(mcu.lang)
         mcu.T0CLKO.select(mcu.lang)
-        mcu.ET0.select(mcu.lang)
+        if mcu.ET0.select(mcu.lang) == 0B1:
+            mcu.EA.set_value(0B1)
         self.timer0_period_config()
 
     def get_timer0_freq(self):
@@ -161,7 +162,8 @@ class TimerConfig:
             mcu.T1_CT.select(mcu.lang)
             mcu.T1_GATE.select(mcu.lang)
             mcu.T1CLKO.select(mcu.lang)
-            mcu.ET1.select(mcu.lang)
+            if mcu.ET1.select(mcu.lang) == 0B1:
+                mcu.EA.set_value(0B1)
             t1mode = mcu.T1_MODE.select(mcu.lang)
 
             if t1mode == 0B11:
@@ -185,12 +187,12 @@ class TimerConfig:
                 else:
                     return int(256 - (mcu.SYSCLK / freq / 32)) if mode_1t else int(256 - (mcu.SYSCLK / freq / 32 / 12))
             else:
-                return int(256 - (mcu.SYSCLK / freq / 2)) if mode_1t else int(256 - (mcu.SYSCLK / freq / 2 / 12))
+                return int(256 - (mcu.SYSCLK / freq)) if mode_1t else int(256 - (mcu.SYSCLK / freq / 12))
         else:
             if uart_mode:
                 return int(65536 - (mcu.SYSCLK / freq / 4)) if mode_1t else int(65536 - (mcu.SYSCLK / freq / 4 / 12))
             else:
-                return int(65536 - (mcu.SYSCLK / freq / 2)) if mode_1t else int(65536 - (mcu.SYSCLK / freq / 2 / 12))
+                return int(65536 - (mcu.SYSCLK / freq)) if mode_1t else int(65536 - (mcu.SYSCLK / freq / 12))
 
     def timer0and1_freq_calculate(self, mode_1t:bool, mode_2:bool, thl:int, uart_mode:bool=False, uart_rate_double:bool=False):
         """根据定时器1的 TH/TL 计算频率"""
@@ -202,12 +204,12 @@ class TimerConfig:
                 else:
                     return int(mcu.SYSCLK / (256 - thl) / 32) if mode_1t else int(mcu.SYSCLK / (256 - thl) / 32 / 12)
             else:
-                return int(mcu.SYSCLK / (256 - thl) / 2) if mode_1t else int(mcu.SYSCLK / (256 - thl) / 2 / 12)
+                return int(mcu.SYSCLK / (256 - thl)) if mode_1t else int(mcu.SYSCLK / (256 - thl) / 12)
         else:
             if uart_mode: # 计算波特率
                 return int(mcu.SYSCLK / (65536 - thl) / 4) if mode_1t else int(mcu.SYSCLK / (65536 - thl) / 4 / 12)
             else:
-                return int(mcu.SYSCLK / (65536 - thl) / 2) if mode_1t else int(mcu.SYSCLK / (65536 - thl) / 2 / 12)
+                return int(mcu.SYSCLK / (65536 - thl)) if mode_1t else int(mcu.SYSCLK / (65536 - thl) / 12)
 
     def timer1_period_config(self, mode_1t:bool, mode_2:bool, uart_mode:bool=False, uart_rate_double:bool=False):
         """配置时钟1"""
@@ -258,7 +260,8 @@ class TimerConfig:
             mode_1t = mcu.T2x12.select(mcu.lang) == 0B1
             mcu.T2_CT.select(mcu.lang)
             mcu.T2CLKO.select(mcu.lang)
-            mcu.ET2.select(mcu.lang)
+            if mcu.ET2.select(mcu.lang) == 0B1:
+                mcu.EA.set_value(0B1)
 
         # 收集输入频率, 计算TH/TL
         self.timer2_period_config(mode_1t, uart_mode)
